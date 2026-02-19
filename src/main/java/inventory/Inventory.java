@@ -1,35 +1,39 @@
 package inventory;
 
 import potion.Potion;
-
 import java.util.ArrayList;
+import java.util.List;
 
 public class Inventory {
-    public static final int maxPotion = 10;
-    private ArrayList<Potion> arrayListPotion;
 
-    public Inventory() {
-        arrayListPotion = new ArrayList<>();
+    private int maxPotion;
+    private List<Potion> potions;
+
+    public Inventory(int maxPotion) {
+        this.maxPotion = maxPotion;
+        this.potions = new ArrayList<>();
     }
 
-    public ArrayList<Potion> getArrayListPotion() {
-        return arrayListPotion;
+    public List<Potion> getPotions() {
+        return potions;
     }
 
     public boolean addPotion(Potion potion) {
-        if(getArrayListPotion().size() < maxPotion) {
-            getArrayListPotion().add(potion);
-            return true;
-        }else return false;
+        if (potions.size() >= maxPotion) {
+            return false;
+        }
+        return potions.add(potion);
     }
 
     public boolean removePotion(Potion potion) {
-        for(int i = 0; i < getArrayListPotion().size(); i++) {
-            if(potion.equals(arrayListPotion.get(i))) {
-                arrayListPotion.remove(potion);
-                return true;
-            }
-        }
-        return false;
+        return potions.remove(potion);
+    }
+
+    public boolean isFull() {
+        return potions.size() >= maxPotion;
+    }
+
+    public int getSize() {
+        return potions.size();
     }
 }

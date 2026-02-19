@@ -1,8 +1,8 @@
 package potion;
 
-import character.Character;
+import Entity.Player;
 
 public interface Tradable {
-    boolean buy(Character character);
-    boolean sell(Character character);
+    boolean buy(Player character);
+    boolean sell(Player character);
 }

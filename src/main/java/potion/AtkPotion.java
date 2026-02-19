@@ -1,37 +1,17 @@
 package potion;
 
-import character.Character;
+import Entity.Player;
 
 public class AtkPotion extends Potion{
     private int increaseAtk;
-    private int buyCost;
-    private int sellCost;
 
-    public AtkPotion(int buyCost) {
-        super("AtkPotion");
-        setBuyCost(buyCost);
-        setSellCost(10);
-        setIncreaseAtk(5);
+    public AtkPotion() {
+        super("AtkPotion",30,10);
+        setIncreaseAtk(1);
     }
 
     @Override
-    public boolean buy(character.Character character) {
-        if(character.getGold() >= getBuyCost()) {
-            character.setGold(character.getGold() - getBuyCost());
-            character.getInventory().addPotion(this);
-            return true;
-        } return false;
-    }
-
-    @Override
-    public boolean sell(character.Character character) {
-        character.getInventory().removePotion(this);
-        character.setGold(character.getGold() + getSellCost());
-        return true;
-    }
-
-    @Override
-    public boolean use(Character character) {
+    public boolean use(Player character) {
         character.setAttack(character.getAttack() + getIncreaseAtk());
         character.getInventory().removePotion(this);
         return true;
@@ -51,13 +31,5 @@ public class AtkPotion extends Potion{
 
     public void setIncreaseAtk(int increaseAtk) {
         this.increaseAtk = increaseAtk;
-    }
-
-    public void setBuyCost(int buyCost) {
-        this.buyCost = buyCost;
-    }
-
-    public void setSellCost(int sellCost) {
-        this.sellCost = sellCost;
     }
 }

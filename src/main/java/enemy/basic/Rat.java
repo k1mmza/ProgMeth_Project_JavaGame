@@ -1,6 +1,6 @@
 package enemy.basic;
 
-import character.Character;
+import Entity.Entity;
 import enemy.Enemy;
 import java.util.Random;
 
@@ -9,15 +9,11 @@ public class Rat extends Enemy {
     private Random random = new Random();
 
     public Rat() {
-        super("Rat");
-        setMaxHp(8);
-        setHp(8);
-        setAttack(3);
-        setDefense(1);
+        super("Rat", 8, 3, 1, 2);
     }
 
     @Override
-    public void performAction(Character target) {
+    public void performAction(Entity target) {
         System.out.println(getName() + " bites!");
 
         normalAttack(target);

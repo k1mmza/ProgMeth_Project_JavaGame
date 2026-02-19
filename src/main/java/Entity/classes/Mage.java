@@ -1,22 +1,18 @@
-package character.classes;
+package Entity.classes;
 
-import character.Player;
-import character.Character;
+import Entity.Entity;
+import Entity.Player;
 
 public class Mage extends Player {
 
     public Mage(String name) {
-        super(name);
-        setMaxHp(17);
-        setHp(17);
-        setAttack(6);
-        setDefense(1);
+        super(name, 17, 6, 1);
         setEnergy(1);
     }
 
     // Firebolt
     @Override
-    public void skill1(Character target) {
+    public void skill1(Entity target) {
         if (getEnergy() >= 1) {
             int damage = getAttack() + 4;
             target.takeDamage(damage);
@@ -26,7 +22,7 @@ public class Mage extends Player {
 
     // Mana Barrier
     @Override
-    public void skill2(Character target) {
+    public void skill2(Entity target) {
         if (getEnergy() >= 1) {
             addShield(5);
             setEnergy(getEnergy() - 1);
@@ -35,7 +31,7 @@ public class Mage extends Player {
 
     // Arcane Nova
     @Override
-    public void skill3(Character target) {
+    public void skill3(Entity target) {
         if (getEnergy() >= 3) {
             int damage = getAttack() * 2 + 6;
             target.takeDamage(damage);

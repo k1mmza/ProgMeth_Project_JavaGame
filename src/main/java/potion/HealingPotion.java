@@ -1,37 +1,17 @@
 package potion;
 
-import character.Character;
+import Entity.Player;
 
 public class HealingPotion extends Potion{
     private int increaseHp;
-    private int buyCost;
-    private int sellCost;
 
-    public HealingPotion(int buyCost) {
-        super("HealingPotion");
-        setBuyCost(buyCost);
-        setSellCost(10);
+    public HealingPotion() {
+        super("HealingPotion",15,10);
         setIncreaseHp(15);
     }
 
     @Override
-    public boolean buy(Character character) {
-        if(character.getGold() >= getBuyCost()) {
-            character.setGold(character.getGold() - getBuyCost());
-            character.getInventory().addPotion(this);
-            return true;
-        } return false;
-    }
-
-    @Override
-    public boolean sell(Character character) {
-        character.getInventory().removePotion(this);
-        character.setGold(character.getGold() + getSellCost());
-        return true;
-    }
-
-    @Override
-    public boolean use(Character character) {
+    public boolean use(Player character) {
         character.setHp(character.getHp() + getIncreaseHp());
         character.getInventory().removePotion(this);
         return true;
@@ -51,13 +31,5 @@ public class HealingPotion extends Potion{
 
     public void setIncreaseHp(int increaseHp) {
         this.increaseHp = increaseHp;
-    }
-
-    public void setBuyCost(int buyCost) {
-        this.buyCost = buyCost;
-    }
-
-    public void setSellCost(int sellCost) {
-        this.sellCost = sellCost;
     }
 }

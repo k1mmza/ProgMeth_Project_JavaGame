@@ -1,20 +1,16 @@
 package enemy.basic;
 
-import character.Character;
+import Entity.Entity;
 import enemy.Enemy;
 
 public class Slime extends Enemy {
 
     public Slime() {
-        super("Slime");
-        setMaxHp(15);
-        setHp(15);
-        setAttack(2);
-        setDefense(1);
+        super("Slime", 15, 2, 1, 3);
     }
 
     @Override
-    public void performAction(Character target) {
+    public void performAction(Entity target) {
         System.out.println(getName() + " hardens and gains 3 shield!");
         addShield(3);
 

@@ -1,12 +1,19 @@
 package enemy;
 
-import character.Character;
+import Entity.Entity;
 
-public abstract class Enemy extends Character {
+public abstract class Enemy extends Entity {
 
-    public Enemy(String name) {
-        super(name);
+    protected int goldReward;
+
+    public Enemy(String name, int maxHp, int attack, int defense, int goldReward) {
+        super(name, maxHp, attack, defense);
+        this.goldReward = goldReward;
     }
 
-    public abstract void performAction(Character target);
+    public int getGoldReward() {
+        return goldReward;
+    }
+
+    public abstract void performAction(Entity target);
 }

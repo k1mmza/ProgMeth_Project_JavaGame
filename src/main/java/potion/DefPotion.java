@@ -1,37 +1,17 @@
 package potion;
 
-import character.Character;
+import Entity.Player;
 
 public class DefPotion extends Potion{
     private int increaseDef;
-    private int buyCost;
-    private int sellCost;
 
-    public DefPotion(int buyCost) {
-        super("DefPotion");
-        setBuyCost(buyCost);
-        setSellCost(10);
-        setIncreaseDef(5);
+    public DefPotion() {
+        super("DefPotion",30,10);
+        setIncreaseDef(1);
     }
 
     @Override
-    public boolean buy(character.Character character) {
-        if(character.getGold() >= getBuyCost()) {
-            character.setGold(character.getGold() - getBuyCost());
-            character.getInventory().addPotion(this);
-            return true;
-        } return false;
-    }
-
-    @Override
-    public boolean sell(character.Character character) {
-        character.getInventory().removePotion(this);
-        character.setGold(character.getGold() + getSellCost());
-        return true;
-    }
-
-    @Override
-    public boolean use(Character character) {
+    public boolean use(Player character) {
         character.setDefense(character.getDefense() + getIncreaseDef());
         character.getInventory().removePotion(this);
         return true;
@@ -51,13 +31,5 @@ public class DefPotion extends Potion{
 
     public void setIncreaseDef(int increaseDef) {
         this.increaseDef = increaseDef;
-    }
-
-    public void setBuyCost(int buyCost) {
-        this.buyCost = buyCost;
-    }
-
-    public void setSellCost(int sellCost) {
-        this.sellCost = sellCost;
     }
 }

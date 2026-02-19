@@ -4,7 +4,7 @@ public enum RoomType {
     START,
     NORMAL,
     TREASURE,
+    SHOP,
     ENEMY,
-    BOSS,
-    FINAL_BOSS
+    BOSS
 }

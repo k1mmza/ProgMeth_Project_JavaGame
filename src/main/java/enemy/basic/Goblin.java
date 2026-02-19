@@ -1,6 +1,6 @@
 package enemy.basic;
 
-import character.Character;
+import Entity.Entity;
 import enemy.Enemy;
 import java.util.Random;
 
@@ -10,15 +10,11 @@ public class Goblin extends Enemy {
     private Random random = new Random();
 
     public Goblin() {
-        super("Goblin");
-        setMaxHp(13);
-        setHp(13);
-        setAttack(3);
-        setDefense(2);
+        super("Goblin", 13, 3, 2, 5);
     }
 
     @Override
-    public void performAction(Character target) {
+    public void performAction(Entity target) {
 
         // If charging, unleash heavy attack
         if (isCharging) {
@@ -40,7 +36,7 @@ public class Goblin extends Enemy {
     }
 
 
-    private void goblinNormalAttack(Character target) {
+    private void goblinNormalAttack(Entity target) {
         System.out.println(getName() + " swings wildly!");
         target.takeDamage(getAttack());
     }
