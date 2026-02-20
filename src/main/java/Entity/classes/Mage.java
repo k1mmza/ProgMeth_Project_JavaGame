@@ -38,4 +38,20 @@ public class Mage extends Player {
             setEnergy(getEnergy() - 3);
         }
     }
+
+    @Override
+    public String getSkill1Name() {
+        return "Firebolt";
+    }
+
+    @Override
+    public String getSkill2Name() {
+        return "Mana Barrier";
+    }
+
+    @Override
+    public String getSkill3Name() {
+        return "Arcane Nova";
+    }
+
 }

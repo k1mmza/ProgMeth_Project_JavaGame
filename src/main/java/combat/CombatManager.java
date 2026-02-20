@@ -42,9 +42,7 @@ public class CombatManager {
     }
 
     private void playerTurn(Player player, Enemy enemy) {
-
-        player.resetShield();
-
+        player.addEnergy(1);
         System.out.println("\n1. Attack");
         System.out.println("2. Block");
         System.out.println("3. Focus (+1 Energy)");
@@ -111,9 +109,9 @@ public class CombatManager {
     private void chooseSkill(Player player, Enemy enemy) {
 
         System.out.println("\nChoose Skill:");
-        System.out.println("1. Skill 1");
-        System.out.println("2. Skill 2");
-        System.out.println("3. Skill 3");
+        System.out.println("1. Skill 1 " + player.getSkill1Name());
+        System.out.println("2. Skill 2 " + player.getSkill2Name());
+        System.out.println("3. Skill 3 " + player.getSkill3Name());
 
         int skillChoice = scanner.nextInt();
 

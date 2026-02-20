@@ -56,4 +56,9 @@ public abstract class Player extends Entity {
     public abstract void skill1(Entity target);
     public abstract void skill2(Entity target);
     public abstract void skill3(Entity target);
+
+    public abstract String getSkill1Name();
+    public abstract String getSkill2Name();
+    public abstract String getSkill3Name();
+
 }

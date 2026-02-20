@@ -2,6 +2,7 @@ package potion;
 
 import Entity.Player;
 
+
 public class AtkPotion extends Potion{
     private int increaseAtk;
 

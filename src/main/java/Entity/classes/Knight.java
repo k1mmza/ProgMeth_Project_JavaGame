@@ -40,4 +40,20 @@ public class Knight extends Player {
             setEnergy(getEnergy() - 2);
         }
     }
+
+    @Override
+    public String getSkill1Name() {
+        return "Shield Strike";
+    }
+
+    @Override
+    public String getSkill2Name() {
+        return "Fortify";
+    }
+
+    @Override
+    public String getSkill3Name() {
+        return "Shield Slam";
+    }
+
 }

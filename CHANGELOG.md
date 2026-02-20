@@ -20,3 +20,7 @@
   - Implemented turn-based combat mechanics
   - Added attack, defend, focus, item and skill options for player
 - Shop Class
+
+## v0.3.1 - Combat System Optimization
+- Added Combat test class
+- Added method to get skill names for better combat menu display

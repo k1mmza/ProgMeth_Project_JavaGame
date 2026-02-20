@@ -118,7 +118,7 @@ public abstract class Entity {
     // ===== Shield =====
 
     public void block() {
-        addShield(5); // default block amount
+        addShield(3); // default block amount
     }
 
     public void addShield(int amount) {

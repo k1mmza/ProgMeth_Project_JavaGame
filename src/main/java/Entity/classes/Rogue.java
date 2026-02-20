@@ -44,4 +44,19 @@ public class Rogue extends Player {
             setEnergy(getEnergy() - 2);
         }
     }
+
+    @Override
+    public String getSkill1Name() {
+        return "Backstab";
+    }
+
+    @Override
+    public String getSkill2Name() {
+        return "Smoke Bomb";
+    }
+
+    @Override
+    public String getSkill3Name() {
+        return "Poisoned Blade";
+    }
 }

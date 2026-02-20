@@ -2,6 +2,12 @@
 
 ## Current Progress
 
+## 📜 Changelog
+
+See full version history here:  
+👉 [CHANGELOG.md](CHANGELOG.md)
+
+
 ### ✅ Core Systems Implemented
 
 - Character base class with:
