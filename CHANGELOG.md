@@ -24,3 +24,8 @@
 ## v0.3.1 - Combat System Optimization
 - Added Combat test class
 - Added method to get skill names for better combat menu display
+
+## v0.3.2 - Bosses and Boss Mechanics
+- Added Boss class that inherits from Enemy
+- Implemented unique mechanics for bosses (e.g., special attacks, phases)
+- Added Boss-specific skills and status effects
