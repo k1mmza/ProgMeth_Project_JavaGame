@@ -29,3 +29,14 @@
 - Added Boss class that inherits from Enemy
 - Implemented unique mechanics for bosses (e.g., special attacks, phases)
 - Added Boss-specific skills and status effects
+
+## v0.4 - Map Generation & Visuals
+### Added
+- **Implemented Map Generation** : Created the new node-based map system from scratch.
+- **Custom Icons** : Replaced basic nodes with image icons (Enemy, Elite, Boss, etc.).
+- **Path Progression** : Added rules to start from the bottom and only select connected paths. 
+- **Visual Effects** : Added glow effects for selectable nodes and dimmed unavailable paths.
+- **UI Optimization** : Scaled the map to a fullscreen layout with automatic centering.
+
+### Changed
+- **bulid.gradle** : Changed path application main class to application.Main
