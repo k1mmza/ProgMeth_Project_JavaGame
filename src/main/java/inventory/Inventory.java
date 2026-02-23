@@ -1,6 +1,6 @@
 package inventory;
 
-import potion.Potion;
+import inventory.potion.Potion;
 import java.util.ArrayList;
 import java.util.List;
 

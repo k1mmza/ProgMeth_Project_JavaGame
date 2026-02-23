@@ -1,13 +1,13 @@
 package component;
 
+import enums.RoomType;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
-import logic.MapLogic;
-import logic.MapNode;
-import logic.RoomType;
+import map.logic.MapLogic;
+import map.logic.MapNode;
 import util.Constants;
 
 public class MapNodeView extends StackPane {

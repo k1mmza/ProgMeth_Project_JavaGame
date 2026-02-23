@@ -5,6 +5,7 @@ import inventory.Inventory;
 public abstract class Player extends Entity {
 
     protected int energy;
+    private int maxEnergy = 5;
     protected int gold;
     protected Inventory inventory;
 
@@ -29,14 +30,6 @@ public abstract class Player extends Entity {
 
     public int getEnergy() { return energy; }
 
-    public void addEnergy(int amount) {
-        energy += amount;
-    }
-
-    public void spendEnergy(int amount) {
-        energy -= amount;
-    }
-
     public void focus() {
         setEnergy(getEnergy() + 1);
     }
@@ -45,20 +38,52 @@ public abstract class Player extends Entity {
         this.energy = energy;
     }
 
+    public void resetEnergyToZero() {
+        energy = 0;
+    }
+
+    public void gainEnergy(int amount) {
+        energy += amount;
+        if (energy > maxEnergy) {
+            energy = maxEnergy;
+        }
+    }
+
+    public boolean useEnergy(int amount) {
+        if (energy >= amount) {
+            energy -= amount;
+            return true;
+        }
+        return false;
+    }
+
+    public void resetCombatState() {
+        this.shield = 0;
+        this.energy = 0;
+        this.evadeStacks = 0;
+        this.vulnerableTurns = 0;
+        this.poisonTurns = 0;
+    }
+
     // ===== Inventory =====
 
     public Inventory getInventory() {
         return inventory;
     }
 
+
     // ===== Skills =====
 
-    public abstract void skill1(Entity target);
-    public abstract void skill2(Entity target);
-    public abstract void skill3(Entity target);
+    public abstract boolean skill1(Entity target);
+    public abstract boolean skill2(Entity target);
+    public abstract boolean skill3(Entity target);
 
     public abstract String getSkill1Name();
     public abstract String getSkill2Name();
     public abstract String getSkill3Name();
+
+    public abstract int getSkill1Cost();
+    public abstract int getSkill2Cost();
+    public abstract int getSkill3Cost();
 
 }

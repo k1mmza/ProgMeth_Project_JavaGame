@@ -6,43 +6,69 @@ import Entity.Player;
 public class Rogue extends Player {
 
     public Rogue(String name) {
-        super(name, 19, 5, 2);
+        super(name, 80, 10, 6);
         setEnergy(0);
     }
 
-    // Backstab
+    // Backstab (Cost: 1)
     @Override
-    public void skill1(Entity target) {
-        if (getEnergy() >= 1) {
-            int damage = getAttack() + 5;
+    public boolean skill1(Entity target) {
 
-            if (target.isVulnerable()) {
-                damage = (int)(damage * 1.5);
-            }
+        int cost = 1;
 
-            target.takeDamage(damage);
-            setEnergy(getEnergy() - 1);
+        if (!useEnergy(cost)) {
+            System.out.println("Not enough energy!");
+            return false;
         }
+
+        System.out.println(getName() + " uses Backstab!");
+
+        int damage = getAttack() + 5;
+
+        if (target.isVulnerable()) {
+            damage = (int) (damage * 1.5);
+        }
+
+        target.takeDamage(damage);
+        return true;
     }
 
-    // Smoke Bomb (Evade + Apply Vulnerable)
+    // Smoke Bomb (Cost: 1)
     @Override
-    public void skill2(Entity target) {
-        if (getEnergy() >= 1) {
-            addEvade(1);              // Avoid next attack
-            target.applyVulnerable(1); // Target takes extra damage
-            setEnergy(getEnergy() - 1);
+    public boolean skill2(Entity target) {
+
+        int cost = 1;
+
+        if (!useEnergy(cost)) {
+            System.out.println("Not enough energy!");
+            return false;
         }
+
+        System.out.println(getName() + " uses Smoke Bomb!");
+
+        addEvade(1);                // Avoid next attack
+        target.applyVulnerable(1);  // Target takes extra damage
+
+        return true;
     }
 
-    // Poisoned Blade
+    // Poisoned Blade (Cost: 2)
     @Override
-    public void skill3(Entity target) {
-        if (getEnergy() >= 2) {
-            target.takeDamage(getAttack());
-            target.addPoison(4);  // 4 damage over time
-            setEnergy(getEnergy() - 2);
+    public boolean skill3(Entity target) {
+
+        int cost = 2;
+
+        if (!useEnergy(cost)) {
+            System.out.println("Not enough energy!");
+            return false;
         }
+
+        System.out.println(getName() + " uses Poisoned Blade!");
+
+        target.takeDamage(getAttack());
+        target.addPoison(4);
+
+        return true;
     }
 
     @Override
@@ -58,5 +84,20 @@ public class Rogue extends Player {
     @Override
     public String getSkill3Name() {
         return "Poisoned Blade";
+    }
+
+    @Override
+    public int getSkill1Cost() {
+        return 1;
+    }
+
+    @Override
+    public int getSkill2Cost() {
+        return 1;
+    }
+
+    @Override
+    public int getSkill3Cost() {
+        return 2;
     }
 }

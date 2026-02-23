@@ -56,7 +56,9 @@ public abstract class Entity {
         this.defense = defense;
     }
     public int getShield() { return shield; }
-
+    public void heal(int amount) {
+        setHp(getHp() + amount);
+    }
     // ===== Combat =====
 
     public void normalAttack(Entity target) {
@@ -67,31 +69,53 @@ public abstract class Entity {
     public void takeDamage(int damage) {
 
         if (evadeStacks > 0) {
+            System.out.println(getName() + " evaded the attack!");
             evadeStacks--;
             return;
         }
 
         if (vulnerableTurns > 0) {
-            damage *= 1.5;
+            damage = (int)(damage * 1.5);
+            System.out.println(getName() + " is vulnerable! Damage increased!");
         }
+
+        // === NEW: Defense Percentage Reduction ===
+        double reduction = defense * 0.05;  // 5% per defense
+        reduction = Math.min(reduction, 0.60); // cap at 60%
+
+        int reducedAmount = (int)(damage * reduction);
+        damage -= reducedAmount;
+
+        damage = Math.max(damage, 1); // always at least 1 damage
 
         if (shield > 0) {
             int absorbed = Math.min(shield, damage);
             shield -= absorbed;
             damage -= absorbed;
+
+            System.out.println(getName() + "'s shield absorbed " + absorbed + " damage!");
         }
 
-        hp -= damage;
+        if (damage > 0) {
+            hp -= damage;
+            System.out.println(getName() + " took " + damage + " damage!");
+        }
+
         if (hp < 0) hp = 0;
     }
 
-    public void endTurn() {
-
+    public void startTurn() {
+        int poison = poisonTurns/2 + 1;
         if (poisonTurns > 0) {
-            hp--;
+            int poisonDamage = poisonTurns / 2 + 1;
+            System.out.println(getName() + " takes " + poisonDamage + " poison damage!");
+            hp -= poisonDamage;
             poisonTurns--;
         }
 
+    }
+
+    public void endTurn() {
         if (vulnerableTurns > 0) {
             vulnerableTurns--;
         }
@@ -100,6 +124,7 @@ public abstract class Entity {
     // ===== Status Effects =====
 
     public void applyVulnerable(int turns) {
+        System.out.println(getName() + " is now vulnerable for " + turns + " turns!");
         vulnerableTurns += turns;
     }
 
@@ -108,12 +133,15 @@ public abstract class Entity {
     }
 
     public void addPoison(int turns) {
+        System.out.println(getName() + " is poisoned for " + turns + " turns!");
         poisonTurns += turns;
     }
 
     public void addEvade(int stacks) {
+        System.out.println(getName() + " gains " + stacks + " evade stack(s)!");
         evadeStacks += stacks;
     }
+
 
     // ===== Shield =====
 

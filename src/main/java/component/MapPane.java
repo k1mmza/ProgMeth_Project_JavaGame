@@ -1,8 +1,8 @@
 package component;
 
+import enums.RoomType;
 import javafx.scene.layout.Pane;
-import logic.MapNode;
-import logic.RoomType;
+import map.logic.MapNode;
 import util.Constants;
 
 import java.util.ArrayList;

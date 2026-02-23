@@ -8,7 +8,7 @@
 - Refactored code for better readability and performance 
   - Separated Character to Player and Enemy classes
 - Added Enums for better type safety
-- Implemented basic combat system
+- Implemented basic gameLogic system
   - added attack and defend mechanics
   - added skill for player and enemy
 - Added Status Effects (e.g., Poison)
@@ -17,13 +17,13 @@
 - Refactored Character class to Entity class
   - Player and Enemy now inherit from Entity
 - Added Combat System
-  - Implemented turn-based combat mechanics
+  - Implemented turn-based gameLogic mechanics
   - Added attack, defend, focus, item and skill options for player
 - Shop Class
 
 ## v0.3.1 - Combat System Optimization
 - Added Combat test class
-- Added method to get skill names for better combat menu display
+- Added method to get skill names for better gameLogic menu display
 
 ## v0.3.2 - Bosses and Boss Mechanics
 - Added Boss class that inherits from Enemy
@@ -40,3 +40,8 @@
 
 ### Changed
 - **bulid.gradle** : Changed path application main class to application.Main
+
+## v0.4.1 - Map Generation Optimization
+### Changed
+- Refactored The new node-based map system for better performance.
+- Make map generation more efficient by using a weight-based system for node selection, allowing for more varied and interesting map layouts.

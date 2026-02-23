@@ -58,4 +58,4 @@ See full version history here:
 ## Next Steps
 
 - Implement GameState manager loop
-- Add room progression system
+- Add map progression system

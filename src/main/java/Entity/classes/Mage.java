@@ -6,37 +6,60 @@ import Entity.Player;
 public class Mage extends Player {
 
     public Mage(String name) {
-        super(name, 17, 6, 1);
-        setEnergy(1);
+        super(name, 70, 13, 4);
+        setEnergy(0); // match your new energy system (start at 0)
     }
 
-    // Firebolt
+    // Firebolt (Cost: 2)
     @Override
-    public void skill1(Entity target) {
-        if (getEnergy() >= 1) {
-            int damage = getAttack() + 4;
-            target.takeDamage(damage);
-            setEnergy(getEnergy() - 1);
+    public boolean skill1(Entity target) {
+
+        int cost = 2;
+
+        if (!useEnergy(cost)) {
+            System.out.println("Not enough energy!");
+            return false;
         }
+
+        System.out.println(getName() + " casts Firebolt!");
+        int damage = getAttack() + 6;
+        target.takeDamage(damage);
+
+        return true;
     }
 
-    // Mana Barrier
+    // Mana Barrier (Cost: 2)
     @Override
-    public void skill2(Entity target) {
-        if (getEnergy() >= 1) {
-            addShield(5);
-            setEnergy(getEnergy() - 1);
+    public boolean skill2(Entity target) {
+
+        int cost = 2;
+
+        if (!useEnergy(cost)) {
+            System.out.println("Not enough energy!");
+            return false;
         }
+
+        System.out.println(getName() + " casts Mana Barrier!");
+        addShield(15);
+
+        return true;
     }
 
-    // Arcane Nova
+    // Arcane Nova (Cost: 3)
     @Override
-    public void skill3(Entity target) {
-        if (getEnergy() >= 3) {
-            int damage = getAttack() * 2 + 6;
-            target.takeDamage(damage);
-            setEnergy(getEnergy() - 3);
+    public boolean skill3(Entity target) {
+
+        int cost = 3;
+
+        if (!useEnergy(cost)) {
+            System.out.println("Not enough energy!");
+            return false;
         }
+
+        System.out.println(getName() + " casts Arcane Nova!");
+        int damage = getAttack() * 2 + 6;
+        target.takeDamage(damage);
+        return true;
     }
 
     @Override
@@ -54,4 +77,18 @@ public class Mage extends Player {
         return "Arcane Nova";
     }
 
+    @Override
+    public int getSkill1Cost() {
+        return 2;
+    }
+
+    @Override
+    public int getSkill2Cost() {
+        return 2;
+    }
+
+    @Override
+    public int getSkill3Cost() {
+        return 3;
+    }
 }

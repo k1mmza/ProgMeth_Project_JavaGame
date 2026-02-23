@@ -2,9 +2,11 @@ package enums;
 
 public enum RoomType {
     START,
-    NORMAL,
-    TREASURE,
+    REST,
+    EVENT,
     SHOP,
     ENEMY,
-    BOSS
+    TREASURE,
+    ELITE,
+    BOSS,
 }

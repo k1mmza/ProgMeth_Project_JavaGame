@@ -1,0 +1,54 @@
+package Entity.enemy.basic;
+
+import Entity.Entity;
+import Entity.enemy.Enemy;
+import java.util.Random;
+
+public class Goblin extends Enemy {
+
+    private boolean isCharging = false;
+    private Random random = new Random();
+
+    public Goblin() {
+        super("Goblin", 25, 8, 4, 7);
+    }
+
+    @Override
+    public void performAction(Entity target) {
+
+        // If charging, unleash heavy attack
+        if (isCharging) {
+            System.out.println(getName() + " unleashes a HEAVY SLASH!");
+            target.takeDamage(getAttack() + 3);
+            isCharging = false;
+            return;
+        }
+
+        int roll = random.nextInt(100); // 0–99
+
+        if (roll < 50) {
+            goblinNormalAttack(target);
+        } else if (roll < 75) {
+            defend();
+        } else {
+            charge();
+        }
+    }
+
+
+    private void goblinNormalAttack(Entity target) {
+        System.out.println(getName() + " swings wildly!");
+        target.takeDamage(getAttack());
+    }
+
+    private void defend() {
+        System.out.println(getName() + " raises its guard!");
+        addShield(6);
+    }
+
+    private void charge() {
+        System.out.println(getName() + " starts charging a heavy attack! It looks vulnerable!");
+        isCharging = true;
+        applyVulnerable(1);
+    }
+}
