@@ -14,8 +14,6 @@ public class HealingPotion extends Potion{
     @Override
     public boolean use(Player character) {
         character.heal(25);
-        System.out.println("You restore 25 HP.");
-        character.getInventory().removePotion(this);
         return true;
     }
 

@@ -15,8 +15,6 @@ public class AtkPotion extends Potion{
     @Override
     public boolean use(Player character) {
         character.setAttack(character.getAttack() + getIncreaseAtk());
-        System.out.println("Your attack increases by 1!");
-        character.getInventory().removePotion(this);
         return true;
     }
 

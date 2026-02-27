@@ -1,26 +1,21 @@
 package map.event;
 
 import Entity.Player;
-
 import java.util.Scanner;
 
 public class RiskGoldEvent implements GameEvent {
 
     @Override
     public void execute(Player player, Scanner scanner) {
+        // console version
+    }
 
-        System.out.println("A shady merchant offers risky gold.");
-        System.out.println("1. Gain 25 gold but lose 8 HP");
-        System.out.println("2. Refuse");
+    @Override
+    public void applyChoice(Player player, int choice) {
 
-        int choice = scanner.nextInt();
-
-        if (choice == 1) {
+        if (choice == 0) {
             player.takeDamage(8);
             player.addGold(25);
-            System.out.println("You took the risk!");
-        } else {
-            System.out.println("You walk away.");
         }
     }
 
@@ -28,5 +23,22 @@ public class RiskGoldEvent implements GameEvent {
     public String getName() {
         return "Risky Deal";
     }
-}
 
+    @Override
+    public String getDescription() {
+        return "A shady merchant offers you gold... for a price.";
+    }
+
+    @Override
+    public String getImagePath() {
+        return "/events/merchant.png";
+    }
+
+    @Override
+    public String[] getOptions() {
+        return new String[]{
+                "Gain 25 Gold (Lose 8 HP)",
+                "Refuse"
+        };
+    }
+}

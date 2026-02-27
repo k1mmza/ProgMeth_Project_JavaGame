@@ -20,6 +20,10 @@ public class Shop {
         stock.add(new EnergyPotion());
     }
 
+    public List<Potion> getStock() {
+        return stock;
+    }
+
     public void displayStock() {
         System.out.println("=== Shop ===");
         for (int i = 0; i < stock.size(); i++) {

@@ -11,8 +11,6 @@ public class EnergyPotion extends Potion{
     @Override
     public boolean use(Player character) {
         character.gainEnergy(2);
-        System.out.println("You restore 2 Energy.");
-        character.getInventory().removePotion(this);
         return true;
     }
 

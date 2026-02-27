@@ -83,8 +83,17 @@ public class MapGenerator {
         bossLayer.add(bossRoom);
         map.add(bossLayer);
 
-        // 5️⃣ Assign Room Types + Create Room Objects
         assignRoomTypes(map);
+
+// 🔥 รวม node ทั้งหมดเข้า list เดียว
+        List<MapNode> flatList = new ArrayList<>();
+
+        for (List<MapNode> row : map) {
+            flatList.addAll(row);
+        }
+
+// 🔥 ส่งให้ MapLogic ใช้สำหรับล็อกเส้นทาง
+        MapLogic.setAllNodes(flatList);
 
         return map;
     }
@@ -177,12 +186,15 @@ public class MapGenerator {
 
                 if (floor == 0) {
                     node.setType(RoomType.ENEMY);
+                    node.createRoomFromType();
                 }
                 else if (floor == Constants.FLOORS - 1) {
                     node.setType(RoomType.REST);
+                    node.createRoomFromType();
                 }
                 else {
                     node.setType(weightedRoomType(floor));
+                    node.createRoomFromType();
                 }
 
                 node.createRoomFromType();

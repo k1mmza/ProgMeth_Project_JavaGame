@@ -14,8 +14,6 @@ public class DefPotion extends Potion{
     @Override
     public boolean use(Player character) {
         character.setDefense(character.getDefense() + getIncreaseDef());
-        System.out.println("Increase defense by 1.");
-        character.getInventory().removePotion(this);
         return true;
     }
 

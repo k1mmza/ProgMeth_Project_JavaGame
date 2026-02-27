@@ -1,31 +1,43 @@
 package map.event;
 
 import Entity.Player;
-import map.event.GameEvent;
-
 import java.util.Scanner;
 
 public class HealingEvent implements GameEvent {
 
     @Override
     public void execute(Player player, Scanner scanner) {
+        // console version
+    }
 
-        System.out.println("You find a healing fountain.");
-        System.out.println("1. Heal 10 HP");
-        System.out.println("2. Leave");
+    @Override
+    public void applyChoice(Player player, int choice) {
 
-        int choice = scanner.nextInt();
-
-        if (choice == 1) {
+        if (choice == 0) {
             player.heal(10);
-            System.out.println("You feel refreshed!");
-        } else {
-            System.out.println("You leave it alone.");
         }
     }
 
     @Override
     public String getName() {
         return "Healing Fountain";
+    }
+
+    @Override
+    public String getDescription() {
+        return "You find a mysterious healing fountain.";
+    }
+
+    @Override
+    public String getImagePath() {
+        return "/events/fountain.png";
+    }
+
+    @Override
+    public String[] getOptions() {
+        return new String[]{
+                "Heal 10 HP",
+                "Leave"
+        };
     }
 }
