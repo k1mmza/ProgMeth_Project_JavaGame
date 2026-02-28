@@ -46,7 +46,7 @@ public class MainMap extends Application {
 
         mapScene = new Scene(root, 1024, 768); // ✅ เก็บ scene
 
-        stage.setTitle("Slay the Spire Map");
+        stage.setTitle("SLAY THE GPA");
         stage.setScene(mapScene);
         stage.show();
     }

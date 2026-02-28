@@ -3,13 +3,18 @@ package map.room;
 import Entity.Player;
 import Entity.enemy.Enemy;
 import inventory.potion.Potion;
+import javafx.animation.PauseTransition;
+import javafx.animation.TranslateTransition;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.util.Duration;
 import map.Room;
 
 import java.util.Iterator;
@@ -29,30 +34,46 @@ public class EnemyRoomScene {
 
         mainLayout.setStyle("-fx-background-color: #1b1b1b;");
 
+        HBox combatArea = new HBox(50);
+        combatArea.setAlignment(Pos.CENTER);
+        mainLayout.setCenter(combatArea);
+
         // ===== PLAYER PANEL =====
-        VBox playerPanel = new VBox(10);
+        VBox playerPanel = new VBox(20);
         playerPanel.setAlignment(Pos.CENTER);
+        playerPanel.setPadding(new Insets(30));
+
+        javafx.scene.image.ImageView playerImageView = new javafx.scene.image.ImageView();
+        javafx.scene.image.Image pImage = getPlayerImage(player);
+        if (pImage != null) {
+            playerImageView.setImage(pImage);
+            playerImageView.setFitHeight(200);
+            playerImageView.setPreserveRatio(true);
+        }
 
         Label playerName = new Label(player.getName());
-        playerName.setTextFill(Color.WHITE);
+        playerName.setStyle("-fx-text-fill: white; -fx-font-size: 20px; -fx-font-weight: bold;");
 
         ProgressBar playerHpBar = new ProgressBar();
-        playerHpBar.setPrefWidth(300);
+        playerHpBar.setPrefWidth(200);
 
         Label energyLabel = new Label();
         energyLabel.setTextFill(Color.WHITE);
+        energyLabel.setStyle("-fx-font-size: 14px;");
 
-        playerPanel.getChildren().addAll(playerName, playerHpBar, energyLabel);
-        mainLayout.setTop(playerPanel);
+        playerPanel.getChildren().addAll(playerImageView, playerName, playerHpBar, energyLabel);
 
         // ===== ENEMY PANEL =====
         HBox enemyPanel = new HBox(30);
         enemyPanel.setAlignment(Pos.CENTER);
-        mainLayout.setCenter(enemyPanel);
+        enemyPanel.setPadding(new Insets(30));
+
+        combatArea.getChildren().addAll(playerPanel, enemyPanel);
 
         // ===== ACTION PANEL =====
         HBox actionPanel = new HBox(15);
         actionPanel.setAlignment(Pos.CENTER);
+        actionPanel.setStyle("-fx-padding: 20; -fx-background-color: #333;");
 
         Button attackBtn = new Button("Attack");
         Button blockBtn = new Button("Block");
@@ -66,26 +87,33 @@ public class EnemyRoomScene {
 
         mainLayout.setBottom(actionPanel);
 
-        // ===== SKILL PANEL =====
-        VBox skillPanel = new VBox(10);
-        skillPanel.setAlignment(Pos.CENTER);
-        skillPanel.setStyle("-fx-background-color: #222; -fx-padding: 15;");
-        skillPanel.setVisible(false);
+        // ===== SKILL POPUP =====
+        VBox skillPopup = new VBox(10);
+        skillPopup.setAlignment(Pos.CENTER);
+        skillPopup.setStyle("-fx-background-color: #222; -fx-padding: 15; -fx-border-color: #555;");
+        skillPopup.setMaxSize(200, 200);
+        skillPopup.setVisible(false);
 
         Button s1 = new Button();
         Button s2 = new Button();
         Button s3 = new Button();
+        Button closeSkillBtn = new Button("Close");
+        closeSkillBtn.setOnAction(e -> skillPopup.setVisible(false));
 
-        skillPanel.getChildren().addAll(s1, s2, s3);
-        mainLayout.setRight(skillPanel);
+        skillPopup.getChildren().addAll(s1, s2, s3, closeSkillBtn);
+        root.getChildren().add(skillPopup);
 
-        // ===== ITEM PANEL =====
-        VBox itemPanel = new VBox(10);
-        itemPanel.setAlignment(Pos.CENTER);
-        itemPanel.setStyle("-fx-background-color: #222; -fx-padding: 15;");
-        itemPanel.setVisible(false);
+        // ===== ITEM POPUP =====
+        VBox itemPopup = new VBox(10);
+        itemPopup.setAlignment(Pos.CENTER);
+        itemPopup.setStyle("-fx-background-color: #222; -fx-padding: 15; -fx-border-color: #555;");
+        itemPopup.setMaxSize(200, 250);
+        itemPopup.setVisible(false);
 
-        mainLayout.setLeft(itemPanel);
+        Button closeItemBtn = new Button("Close");
+        closeItemBtn.setOnAction(e -> itemPopup.setVisible(false));
+
+        root.getChildren().add(itemPopup);
 
         // ===== INITIAL UI =====
         updateUI(player, enemies, selectedEnemy,
@@ -96,20 +124,17 @@ public class EnemyRoomScene {
         s2.setText(player.getSkill2Name() + " (Cost: " + player.getSkill2Cost() + ")");
         s3.setText(player.getSkill3Name() + " (Cost: " + player.getSkill3Cost() + ")");
 
-        skillBtn.setOnAction(e ->
-                skillPanel.setVisible(!skillPanel.isVisible())
-        );
+        // ===== BUTTON EVENTS =====
+        skillBtn.setOnAction(e -> {
+            itemPopup.setVisible(false);
+            skillPopup.setVisible(!skillPopup.isVisible());
+        });
 
         itemBtn.setOnAction(e -> {
-            updateItemPanel(player, itemPanel,
-                    selectedEnemy,
-                    enemies, room, onComplete,
-                    playerHpBar, energyLabel,
-                    enemyPanel,
-                    attackBtn, blockBtn, focusBtn,
-                    root);
-
-            itemPanel.setVisible(!itemPanel.isVisible());
+            skillPopup.setVisible(false);
+            updateItemPopup(player, itemPopup, selectedEnemy, enemies, room, onComplete,
+                    playerHpBar, energyLabel, enemyPanel, actionPanel, root); // ส่ง actionPanel เข้าไปคุมแทน
+            itemPopup.setVisible(!itemPopup.isVisible());
         });
 
         // ===== ATTACK =====
@@ -118,33 +143,50 @@ public class EnemyRoomScene {
 
             player.normalAttack(selectedEnemy[0]);
 
-            endTurn(player, enemies, room, onComplete,
-                    selectedEnemy,
-                    playerHpBar, energyLabel,
-                    enemyPanel,
-                    attackBtn, blockBtn, focusBtn,
-                    root);
+            itemPopup.setVisible(false);
+            skillPopup.setVisible(false);
+            actionPanel.setDisable(true);
+
+            playAttackAnimation(playerPanel, true, () -> {
+                player.normalAttack(selectedEnemy[0]);
+                endPlayerTurn(player, enemies, room, onComplete,
+                        selectedEnemy,
+                        playerHpBar, energyLabel,
+                        enemyPanel,
+                        actionPanel,
+                        root);
+            });
+
+
         });
 
         // ===== BLOCK =====
         blockBtn.setOnAction(e -> {
             player.block();
-            endTurn(player, enemies, room, onComplete,
+
+            itemPopup.setVisible(false);
+            skillPopup.setVisible(false);
+
+            endPlayerTurn(player, enemies, room, onComplete,
                     selectedEnemy,
                     playerHpBar, energyLabel,
                     enemyPanel,
-                    attackBtn, blockBtn, focusBtn,
+                    actionPanel,
                     root);
         });
 
         // ===== FOCUS =====
         focusBtn.setOnAction(e -> {
             player.focus();
-            endTurn(player, enemies, room, onComplete,
+
+            itemPopup.setVisible(false);
+            skillPopup.setVisible(false);
+
+            endPlayerTurn(player, enemies, room, onComplete,
                     selectedEnemy,
                     playerHpBar, energyLabel,
                     enemyPanel,
-                    attackBtn, blockBtn, focusBtn,
+                    actionPanel,
                     root);
         });
 
@@ -152,107 +194,177 @@ public class EnemyRoomScene {
         s1.setOnAction(e -> {
             if (selectedEnemy[0] == null) return;
             if (player.skill1(selectedEnemy[0])) {
-                endTurn(player, enemies, room, onComplete,
-                        selectedEnemy,
-                        playerHpBar, energyLabel,
-                        enemyPanel,
-                        attackBtn, blockBtn, focusBtn,
-                        root);
+                skillPopup.setVisible(false);
+                playAttackAnimation(playerPanel, true, () -> {
+                    player.skill1(selectedEnemy[0]);
+                    actionPanel.setDisable(true);
+                    endPlayerTurn(player, enemies, room, onComplete,
+                            selectedEnemy,
+                            playerHpBar, energyLabel,
+                            enemyPanel,
+                            actionPanel,
+                            root);
+                });
             }
         });
 
         s2.setOnAction(e -> {
             if (selectedEnemy[0] == null) return;
             if (player.skill2(selectedEnemy[0])) {
-                endTurn(player, enemies, room, onComplete,
-                        selectedEnemy,
-                        playerHpBar, energyLabel,
-                        enemyPanel,
-                        attackBtn, blockBtn, focusBtn,
-                        root);
+                skillPopup.setVisible(false);
+                playAttackAnimation(playerPanel, true, () -> {
+                    player.skill2(selectedEnemy[0]);
+                    actionPanel.setDisable(true);
+                    endPlayerTurn(player, enemies, room, onComplete,
+                            selectedEnemy,
+                            playerHpBar, energyLabel,
+                            enemyPanel,
+                            actionPanel,
+                            root);
+                });
             }
         });
 
         s3.setOnAction(e -> {
             if (selectedEnemy[0] == null) return;
             if (player.skill3(selectedEnemy[0])) {
-                endTurn(player, enemies, room, onComplete,
-                        selectedEnemy,
-                        playerHpBar, energyLabel,
-                        enemyPanel,
-                        attackBtn, blockBtn, focusBtn,
-                        root);
+                skillPopup.setVisible(false);
+                actionPanel.setDisable(true);
+                playAttackAnimation(playerPanel, true, () -> {
+                    player.skill3(selectedEnemy[0]);
+                    endPlayerTurn(player, enemies, room, onComplete,
+                            selectedEnemy,
+                            playerHpBar, energyLabel,
+                            enemyPanel,
+                            actionPanel,
+                            root);
+                });
             }
         });
 
         return new Scene(root, 1024, 768);
     }
 
+    // ================= Animation =================
+    private static void playAttackAnimation(Node node, boolean isPlayer, Runnable onFinished) {
+        TranslateTransition dash = new TranslateTransition(Duration.seconds(0.15), node);
+
+        dash.setByX(isPlayer ? 60 : -60);
+
+        dash.setAutoReverse(true);
+        dash.setCycleCount(2);
+
+        dash.setOnFinished(e -> {
+            if (onFinished != null) onFinished.run();
+        });
+
+        dash.play();
+    }
+
+
     // ================= TURN SYSTEM =================
 
-    private static void endTurn(
-            Player player,
-            List<Enemy> enemies,
-            Room room,
-            Runnable onComplete,
-            Enemy[] selectedEnemy,
-            ProgressBar playerHpBar,
-            Label energyLabel,
-            HBox enemyPanel,
-            Button attackBtn,
-            Button blockBtn,
-            Button focusBtn,
-            StackPane root
+    private static void endPlayerTurn(
+            Player player, List<Enemy> enemies, Room room, Runnable onComplete,
+            Enemy[] selectedEnemy, ProgressBar playerHpBar, Label energyLabel,
+            HBox enemyPanel, HBox actionPanel, StackPane root
     ) {
-
         removeDead(enemies);
+        updateUI(player, enemies, selectedEnemy, playerHpBar, energyLabel, enemyPanel);
 
-        for (Enemy enemy : enemies) {
-            if (enemy.isAlive()) {
-                enemy.performAction(player);
-            }
-        }
+        if (enemies.isEmpty()) {
+            room.setCleared(true);
 
-        removeDead(enemies);
-        player.startTurn();
+            actionPanel.setDisable(false);
 
-        updateUI(player, enemies, selectedEnemy,
-                playerHpBar, energyLabel, enemyPanel);
-
-        // ===== GAME OVER =====
-        if (!player.isAlive()) {
-
-            VBox loseBox = new VBox(20);
-            loseBox.setAlignment(Pos.CENTER);
-            loseBox.setStyle("-fx-background-color: rgba(0,0,0,0.9);");
-
-            Label loseLabel = new Label("YOU LOSE");
-            loseLabel.setStyle(
-                    "-fx-text-fill: red;" +
-                            "-fx-font-size: 50px;" +
-                            "-fx-font-weight: bold;"
-            );
-
-            Button exitBtn = new Button("Exit Game");
-            exitBtn.setStyle("-fx-font-size: 20px;");
-            exitBtn.setOnAction(ev -> System.exit(0));
-
-            loseBox.getChildren().addAll(loseLabel, exitBtn);
-            root.getChildren().add(loseBox);
-
-            attackBtn.setDisable(true);
-            blockBtn.setDisable(true);
-            focusBtn.setDisable(true);
-
+            actionPanel.getChildren().clear();
+            Button victoryBtn = new Button("Victory! Leave");
+            victoryBtn.setStyle("-fx-font-size: 16px; -fx-padding: 10 20;");
+            victoryBtn.setOnAction(e -> onComplete.run());
+            actionPanel.getChildren().add(victoryBtn);
             return;
         }
 
-        // ===== VICTORY =====
-        if (enemies.stream().noneMatch(Enemy::isAlive)) {
-            room.setCleared(true);
-            attackBtn.setText("Victory! Leave");
-            attackBtn.setOnAction(ev -> onComplete.run());
+        // ปิดปุ่มผู้เล่น ป้องกันการกดสแปมตอนศัตรูกำลังตี
+        actionPanel.setDisable(true);
+
+        // เริ่มให้ศัตรูตีทีละตัว
+        processEnemyTurn(0, player, enemies, room, onComplete, selectedEnemy, playerHpBar, energyLabel, enemyPanel, actionPanel, root);
+    }
+
+    private static void processEnemyTurn(
+            int index, Player player, List<Enemy> enemies, Room room, Runnable onComplete,
+            Enemy[] selectedEnemy, ProgressBar playerHpBar, Label energyLabel,
+            HBox enemyPanel, HBox actionPanel, StackPane root
+    ) {
+        // ถ้าศัตรูตีจบครบทุกตัวแล้ว
+        if (index >= enemies.size()) {
+            removeDead(enemies);
+            if (!player.isAlive()) {
+                showGameOver(root, actionPanel);
+                return;
+            }
+
+            // วนกลับมาเริ่มเทิร์นผู้เล่น
+            player.startTurn();
+            updateUI(player, enemies, selectedEnemy, playerHpBar, energyLabel, enemyPanel);
+
+            // เปิดปุ่มคืนให้ผู้เล่นกดได้
+            actionPanel.setDisable(false);
+            return;
         }
+
+        Enemy currentEnemy = enemies.get(index);
+
+        if (currentEnemy.isAlive() && player.isAlive()) {
+
+            // สร้างดีเลย์
+            PauseTransition waitBeforeAttack = new PauseTransition(Duration.seconds(0.5));
+            waitBeforeAttack.setOnFinished(e -> {
+
+                // ค้นหาการ์ดของศัตรูตัวนี้เพื่อทำอนิเมชัน
+                if (index < enemyPanel.getChildren().size()) {
+                    Node enemyCardNode = enemyPanel.getChildren().get(index);
+
+                    // สั่งเล่นอนิเมชันศัตรูพุ่งไปตีผู้เล่น
+                    playAttackAnimation(enemyCardNode, false, () -> {
+                        // พอพุ่งเสร็จค่อยลดเลือดเรา
+                        currentEnemy.performAction(player);
+                        updateUI(player, enemies, selectedEnemy, playerHpBar, energyLabel, enemyPanel);
+
+                        if (!player.isAlive()) {
+                            showGameOver(root, actionPanel);
+                            return;
+                        }
+
+                        // เรียกตัวต่อไปออกมาตี
+                        processEnemyTurn(index + 1, player, enemies, room, onComplete, selectedEnemy, playerHpBar, energyLabel, enemyPanel, actionPanel, root);
+                    });
+                }
+            });
+            waitBeforeAttack.play();
+
+        } else {
+            // ข้ามไปตัวต่อไปทันที
+            processEnemyTurn(index + 1, player, enemies, room, onComplete, selectedEnemy, playerHpBar, energyLabel, enemyPanel, actionPanel, root);
+        }
+    }
+
+    private static void showGameOver(StackPane root, HBox actionPanel) {
+        VBox loseBox = new VBox(20);
+        loseBox.setAlignment(Pos.CENTER);
+        loseBox.setStyle("-fx-background-color: rgba(0,0,0,0.9);");
+
+        Label loseLabel = new Label("YOU LOSE");
+        loseLabel.setStyle("-fx-text-fill: red; -fx-font-size: 50px; -fx-font-weight: bold;");
+
+        Button exitBtn = new Button("Exit Game");
+        exitBtn.setStyle("-fx-font-size: 20px;");
+        exitBtn.setOnAction(ev -> System.exit(0));
+
+        loseBox.getChildren().addAll(loseLabel, exitBtn);
+        root.getChildren().add(loseBox);
+        actionPanel.setDisable(true);
     }
 
     private static void removeDead(List<Enemy> enemies) {
@@ -266,9 +378,9 @@ public class EnemyRoomScene {
 
     // ================= ITEM PANEL =================
 
-    private static void updateItemPanel(
+    private static void updateItemPopup(
             Player player,
-            VBox itemPanel,
+            VBox itemPopup,
             Enemy[] selectedEnemy,
             List<Enemy> enemies,
             Room room,
@@ -276,56 +388,41 @@ public class EnemyRoomScene {
             ProgressBar playerHpBar,
             Label energyLabel,
             HBox enemyPanel,
-            Button attackBtn,
-            Button blockBtn,
-            Button focusBtn,
+            HBox actionPanel,
             StackPane root
     ) {
-
-        itemPanel.getChildren().clear();
+        itemPopup.getChildren().clear();
 
         List<Potion> potions = player.getInventory().getPotions();
 
         for (int i = 0; i < potions.size(); i++) {
-
-            int index = i;   // สำคัญมาก
+            int index = i;
             Potion potion = potions.get(i);
-
             Button potionBtn = new Button(potion.getName());
+            potionBtn.setPrefWidth(150);
 
             potionBtn.setOnAction(e -> {
-
                 boolean used = potion.use(player);
-
                 if (used) {
-
                     player.getInventory().getPotions().remove(index);
-
-                    // รีเฟรช panel ทันที
-                    updateItemPanel(player, itemPanel,
-                            selectedEnemy,
-                            enemies, room, onComplete,
-                            playerHpBar, energyLabel,
-                            enemyPanel,
-                            attackBtn, blockBtn, focusBtn,
-                            root);
-
-                    endTurn(player, enemies, room, onComplete,
-                            selectedEnemy,
-                            playerHpBar, energyLabel,
-                            enemyPanel,
-                            attackBtn, blockBtn, focusBtn,
-                            root);
+                    itemPopup.setVisible(false);
+                    endPlayerTurn(player, enemies, room, onComplete, selectedEnemy, playerHpBar, energyLabel, enemyPanel, actionPanel, root);
                 }
             });
-
-            itemPanel.getChildren().add(potionBtn);
+            itemPopup.getChildren().add(potionBtn);
         }
 
+        // เพิ่มปุ่มปิดกลับเข้าไปใหม่เสมอ
+        Button closeItemBtn = new Button("Close");
+        closeItemBtn.setPrefWidth(100);
+        closeItemBtn.setOnAction(ev -> itemPopup.setVisible(false));
+        itemPopup.getChildren().add(closeItemBtn);
+
         if (potions.isEmpty()) {
+            itemPopup.getChildren().remove(0);
             Label empty = new Label("No Potions");
             empty.setStyle("-fx-text-fill: white;");
-            itemPanel.getChildren().add(empty);
+            itemPopup.getChildren().addAll(empty, closeItemBtn);
         }
     }
 
@@ -359,20 +456,29 @@ public class EnemyRoomScene {
             boolean isSelected = (selectedEnemy[0] == e);
 
             enemyCard.setStyle(
-                    "-fx-background-color: #2a2a2a;" +
-                            "-fx-padding: 10;" +
-                            "-fx-border-color: " +
-                            (isSelected ? "red;" : "white;")
+                    "-fx-padding: 15;" +
+                            "-fx-background-color: transparent;" +
+                            (isSelected ? "-fx-border-color: yellow; -fx-border-width: 2; -fx-border-radius: 10;" : "")
             );
+
+            javafx.scene.image.ImageView enemyImageView = new javafx.scene.image.ImageView();
+            javafx.scene.image.Image eImage = getEnemyImage(e);
+            if (eImage != null) {
+                enemyImageView.setImage(eImage);
+                enemyImageView.setFitHeight(150); // ขนาดศัตรู
+                enemyImageView.setPreserveRatio(true);
+            }
 
             Label name = new Label(e.getName());
-            name.setTextFill(Color.WHITE);
+            name.setStyle("-fx-text-fill: white; -fx-font-weight: bold;");
 
-            ProgressBar hpBar = new ProgressBar(
-                    (double) e.getHp() / e.getMaxHp()
-            );
+            ProgressBar hpBar = new ProgressBar((double) e.getHp() / e.getMaxHp());
+            hpBar.setPrefWidth(120);
 
-            enemyCard.getChildren().addAll(name, hpBar);
+            Label shieldInfo = new Label(e.getShield() > 0 ? "Shield: " + e.getShield() : "");
+            shieldInfo.setTextFill(Color.LIGHTBLUE);
+
+            enemyCard.getChildren().addAll(enemyImageView, name, hpBar, shieldInfo);
 
             enemyCard.setOnMouseClicked(ev -> {
                 selectedEnemy[0] = e;
@@ -381,6 +487,43 @@ public class EnemyRoomScene {
             });
 
             enemyPanel.getChildren().add(enemyCard);
+        }
+    }
+
+    // ================= IMAGE LOADERS =================
+
+    private static javafx.scene.image.Image getPlayerImage(Player player) {
+        String path = "/player/knight.png";
+        String className = player.getClass().getSimpleName();
+
+        if (className.equals("Mage")) {
+            path = "/player/mage.png";
+        } else if (className.equals("Rogue")) {
+            path = "/player/rogue.png";
+        }
+
+        try {
+            return new javafx.scene.image.Image(EnemyRoomScene.class.getResourceAsStream(path));
+        } catch (Exception e) {
+            System.out.println("ไม่พบรูปผู้เล่น: " + path);
+            return null;
+        }
+    }
+
+    private static javafx.scene.image.Image getEnemyImage(Enemy enemy) {
+        String name = enemy.getClass().getSimpleName().toLowerCase();
+        String path = "/enemy/basic/" + name + ".png";
+
+        if (name.equals("goblinchief") || name.equals("irongladiator") ||
+                name.equals("ratking") || name.equals("slimetyrant")) {
+            path = "/enemy/boss/" + name + ".png";
+        }
+
+        try {
+            return new javafx.scene.image.Image(EnemyRoomScene.class.getResourceAsStream(path));
+        } catch (Exception e) {
+            System.out.println("ไม่พบรูปศัตรู: " + path);
+            return null;
         }
     }
 }

@@ -45,3 +45,14 @@
 ### Changed
 - Refactored The new node-based map system for better performance.
 - Make map generation more efficient by using a weight-based system for node selection, allowing for more varied and interesting map layouts.
+
+## v0.4.2 - Combat UI & Animation Overhaul
+### Added
+- **Visual Combat Layout** : Implemented a completely new left-vs-right battle interface, replacing the text-based placeholder.
+- **Dynamic Sprite Loading** : Player classes (Knight, Mage, Rogue) and Enemy types (Basic, Bosses) now load and display custom image sprites from the resources folder.
+- **Combat Animations** : Added smooth dash animations (TranslateTransition) when players or enemies perform an attack.
+- **Sequential Turn System** : Implemented a time-delayed enemy turn system (PauseTransition) so enemies attack one by one instead of instantly.
+
+## Changed
+- **UI Styling** : Removed bulky background boxes and borders from character panels to make entities look like they are standing naturally in the scene.
+- **Action Locking** : The action panel now properly disables during attack animations and enemy turns to prevent spam-clicking.
