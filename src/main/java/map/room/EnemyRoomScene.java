@@ -3,8 +3,7 @@ package map.room;
 import Entity.Player;
 import Entity.enemy.Enemy;
 import inventory.potion.Potion;
-import javafx.animation.PauseTransition;
-import javafx.animation.TranslateTransition;
+import javafx.animation.*;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -12,6 +11,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
@@ -261,7 +261,6 @@ public class EnemyRoomScene {
         dash.play();
     }
 
-
     // ================= TURN SYSTEM =================
 
     private static void endPlayerTurn(
@@ -330,6 +329,11 @@ public class EnemyRoomScene {
                     playAttackAnimation(enemyCardNode, false, () -> {
                         // พอพุ่งเสร็จค่อยลดเลือดเรา
                         currentEnemy.performAction(player);
+                        // ===== Screen Shake Trigger =====
+                        String enemyName = currentEnemy.getClass().getSimpleName().toLowerCase();
+                        if (enemyName.equals("irongladiator")) {
+                            screenShake(root);
+                        }
                         updateUI(player, enemies, selectedEnemy, playerHpBar, energyLabel, enemyPanel);
 
                         if (!player.isAlive()) {
@@ -428,6 +432,15 @@ public class EnemyRoomScene {
 
     // ================= UI UPDATE =================
 
+    private static void screenShake(Node root) {
+
+        TranslateTransition shake = new TranslateTransition(Duration.millis(40), root);
+        shake.setByX(15);
+        shake.setCycleCount(8);
+        shake.setAutoReverse(true);
+        shake.play();
+    }
+
     private static void updateUI(
             Player player,
             List<Enemy> enemies,
@@ -465,8 +478,22 @@ public class EnemyRoomScene {
             javafx.scene.image.Image eImage = getEnemyImage(e);
             if (eImage != null) {
                 enemyImageView.setImage(eImage);
-                enemyImageView.setFitHeight(150); // ขนาดศัตรู
                 enemyImageView.setPreserveRatio(true);
+
+                String enemyName = e.getClass().getSimpleName().toLowerCase();
+
+                if (enemyName.equals("irongladiator")) {
+                    enemyImageView.setFitHeight(280); // bigger than other bosses
+                }
+                else if (enemyName.equals("goblinchief") ||
+                        enemyName.equals("ratking") ||
+                        enemyName.equals("slimetyrant")) {
+
+                    enemyImageView.setFitHeight(240);
+                }
+                else {
+                    enemyImageView.setFitHeight(150);
+                }
             }
 
             Label name = new Label(e.getName());

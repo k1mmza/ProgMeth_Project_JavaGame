@@ -48,22 +48,6 @@ public class RoomFactory {
         }
     }
 
-    // 🔥 ห้องต่อสู้ (ชั่วคราว)
-    private static Scene createBattleRoom(Room room, Player player, Runnable onComplete) {
-
-        Button finishBtn = new Button("Win Battle");
-
-        finishBtn.setOnAction(e -> {
-            room.setCleared(true);
-            onComplete.run();
-        });
-
-        StackPane root = new StackPane(finishBtn);
-        root.setStyle("-fx-background-color: black;");
-
-        return new Scene(root, 1024, 768);
-    }
-
     // 🔥 ห้องธรรมดา (fallback)
     private static Scene createSimpleRoom(String title, Runnable onComplete) {
 

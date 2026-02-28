@@ -12,7 +12,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import map.Room;
 import map.logic.MapLogic;
 import map.logic.MapNode;
 import map.room.RoomFactory;
@@ -82,13 +81,13 @@ public class MapNodeView extends StackPane {
 
         String path = "";
         switch (type) {
-            case ENEMY: path = "/Enemy.png"; break;
-            case ELITE: path = "/Elite.png"; break;
-            case SHOP: path = "/Shop.png"; break;
-            case REST: path = "/Rest.png"; break;
-            case BOSS: path = "/Boss.png"; break;
-            case TREASURE: path = "/Treasure.png"; break;
-            case EVENT: path = "/Event.png"; break;
+            case ENEMY: path = "/map/Enemy.png"; break;
+            case ELITE: path = "/map/Elite.png"; break;
+            case SHOP: path = "/map/Shop.png"; break;
+            case REST: path = "/map/Rest.png"; break;
+            case BOSS: path = "/map/Boss.png"; break;
+            case TREASURE: path = "/map/Treasure.png"; break;
+            case EVENT: path = "/map/Event.png"; break;
         }
 
         try {
@@ -112,15 +111,17 @@ public class MapNodeView extends StackPane {
                     MapLogic.completeCurrentNode();
 
                     if (node.getType() == RoomType.BOSS) {
+                        MainMap.stopMapMusic();
                         MainMap.switchScene(createEndGameScene());
                         return;
                     }
 
                     mapPane.refreshNodes();
                     MainMap.switchScene(MainMap.getMapScene());
+                    MainMap.playMapMusic();
                 }
         );
-
+        MainMap.stopMapMusic();
         MainMap.switchScene(roomScene);
     }
 
@@ -150,6 +151,7 @@ public class MapNodeView extends StackPane {
         restartBtn.setOnAction(e -> {
             MapLogic.reset();
             MainMap.switchScene(MainMap.getMapScene());
+            MainMap.playMapMusic();
         });
 
         Button exitBtn = new Button("EXIT");

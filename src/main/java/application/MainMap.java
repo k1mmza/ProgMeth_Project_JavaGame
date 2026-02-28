@@ -7,6 +7,8 @@ import javafx.application.Platform;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
 import map.logic.MapGenerator;
 import map.logic.MapNode;
@@ -17,6 +19,7 @@ public class MainMap extends Application {
     private static Scene mapScene;
     private static Stage primaryStage;
     private static Player player;
+    private static MediaPlayer mapMusic;
 
     @Override
     public void start(Stage stage) {
@@ -48,6 +51,7 @@ public class MainMap extends Application {
 
         stage.setTitle("SLAY THE GPA");
         stage.setScene(mapScene);
+        playMapMusic();
         stage.show();
     }
 
@@ -69,5 +73,31 @@ public class MainMap extends Application {
 
     public static Player getPlayer() {
         return player;
+    }
+
+    public static void playMapMusic() {
+        try {
+            if (mapMusic != null) {
+                mapMusic.stop();
+            }
+
+            Media media = new Media(
+                    MainMap.class.getResource("/music/map.mp3").toExternalForm()
+            );
+
+            mapMusic = new MediaPlayer(media);
+            mapMusic.setCycleCount(MediaPlayer.INDEFINITE);
+            mapMusic.setVolume(0.5);
+            mapMusic.play();
+
+        } catch (Exception e) {
+            System.out.println("Map music load error");
+        }
+    }
+
+    public static void stopMapMusic() {
+        if (mapMusic != null) {
+            mapMusic.stop();
+        }
     }
 }
