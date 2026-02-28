@@ -5,6 +5,7 @@ import Entity.classes.Knight;
 import Entity.classes.Mage;
 import Entity.classes.Rogue;
 import gameLogic.GameLogic;
+import inventory.potion.AtkPotion;
 import javafx.application.Platform;
 import application.MainMap;
 
@@ -123,7 +124,7 @@ public class ClassSelectionGUI extends JFrame {
         }
 
         // 🔥 ส่ง player ไปเก็บที่ MainMap
-        player.setGold(1000);
+        player.getInventory().addPotion(new AtkPotion());
         MainMap.setPlayer(player);
 
         dispose();

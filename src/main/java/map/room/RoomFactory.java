@@ -15,7 +15,10 @@ public class RoomFactory {
             case ENEMY:
             case ELITE:
             case BOSS:
-                return createBattleRoom(room, player, onComplete);
+                return EnemyRoomScene.create(room, player, () -> {
+                    room.setCleared(true);
+                    onComplete.run();
+                });
 
             case SHOP:
                 return ShopRoomScene.create(
