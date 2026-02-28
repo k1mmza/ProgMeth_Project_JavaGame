@@ -2,6 +2,7 @@ package application;
 
 import Entity.Player;
 import component.MapPane;
+import enums.RoomType;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Group;
@@ -93,6 +94,41 @@ public class MainMap extends Application {
         } catch (Exception e) {
             System.out.println("Map music load error");
         }
+    }
+
+    public static void playRoomMusic(RoomType type) {
+        String resourcePath = getRoomMusicPath(type);
+        try {
+            if (mapMusic != null) {
+                mapMusic.stop();
+            }
+
+            Media media = new Media(
+                    MainMap.class.getResource(resourcePath).toExternalForm()
+            );
+
+            mapMusic = new MediaPlayer(media);
+            mapMusic.setCycleCount(MediaPlayer.INDEFINITE);
+            mapMusic.setVolume(0.5);
+            mapMusic.play();
+
+        } catch (Exception e) {
+            System.out.println("Room music load error");
+        }
+    }
+
+    private static String getRoomMusicPath(RoomType type) {
+        if (type == null) return "/music/map.mp3";
+        return switch (type) {
+            case ENEMY -> "/music/enemy.mp3";
+            case ELITE -> "/music/enemy.mp3";
+            case SHOP -> "/music/shop.mp3";
+            case REST -> "/music/rest.mp3";
+            case BOSS -> "/music/final_boss.mp3";
+            case TREASURE -> "/music/treasure.mp3";
+            case EVENT -> "/music/rest.mp3";
+            default -> "/music/map.mp3";
+        };
     }
 
     public static void stopMapMusic() {

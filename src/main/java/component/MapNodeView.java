@@ -121,7 +121,7 @@ public class MapNodeView extends StackPane {
                     MainMap.playMapMusic();
                 }
         );
-        MainMap.stopMapMusic();
+        MainMap.playRoomMusic(node.getType());
         MainMap.switchScene(roomScene);
     }
 
