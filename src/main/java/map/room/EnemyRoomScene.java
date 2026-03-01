@@ -14,6 +14,7 @@ import javafx.scene.control.ProgressBar;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 import map.Room;
 
@@ -29,10 +30,26 @@ public class EnemyRoomScene {
 
         // ===== ROOT (StackPane for Overlay) =====
         StackPane root = new StackPane();
-        BorderPane mainLayout = new BorderPane();
-        root.getChildren().add(mainLayout);
 
-        mainLayout.setStyle("-fx-background-color: #1b1b1b;");
+        // ===== BACKGROUND IMAGE =====
+        javafx.scene.image.Image bgImage =
+                new javafx.scene.image.Image(
+                        EnemyRoomScene.class.getResourceAsStream("/images/enemy_room.png")
+                );
+
+        javafx.scene.image.ImageView bgView = new javafx.scene.image.ImageView(bgImage);
+        bgView.setPreserveRatio(false);
+
+        // Make background auto resize with window
+        bgView.fitWidthProperty().bind(root.widthProperty());
+        bgView.fitHeightProperty().bind(root.heightProperty());
+
+        // ===== MAIN LAYOUT =====
+        BorderPane mainLayout = new BorderPane();
+        mainLayout.setBackground(null); // remove dark background
+
+        // Add background FIRST, then UI
+        root.getChildren().addAll(bgView, mainLayout);
 
         HBox combatArea = new HBox(50);
         combatArea.setAlignment(Pos.CENTER);
