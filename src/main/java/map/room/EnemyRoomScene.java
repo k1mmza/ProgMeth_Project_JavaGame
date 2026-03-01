@@ -20,6 +20,7 @@ import map.Room;
 
 import java.util.Iterator;
 import java.util.List;
+import javafx.animation.ParallelTransition;
 
 public class EnemyRoomScene {
 
@@ -285,7 +286,12 @@ public class EnemyRoomScene {
             Enemy[] selectedEnemy, ProgressBar playerHpBar, Label energyLabel,
             HBox enemyPanel, HBox actionPanel, StackPane root
     ) {
-        removeDead(enemies);
+        int goldEarned = removeDead(enemies, player);
+
+        if (goldEarned > 0) {
+            showGoldEffect(root, goldEarned);
+        }
+
         updateUI(player, enemies, selectedEnemy, playerHpBar, energyLabel, enemyPanel);
 
         if (enemies.isEmpty()) {
@@ -315,7 +321,11 @@ public class EnemyRoomScene {
     ) {
         // ถ้าศัตรูตีจบครบทุกตัวแล้ว
         if (index >= enemies.size()) {
-            removeDead(enemies);
+            int goldEarned = removeDead(enemies, player);
+
+            if (goldEarned > 0) {
+                showGoldEffect(root, goldEarned);
+            }
             if (!player.isAlive()) {
                 showGameOver(root, actionPanel);
                 return;
@@ -388,13 +398,27 @@ public class EnemyRoomScene {
         actionPanel.setDisable(true);
     }
 
-    private static void removeDead(List<Enemy> enemies) {
+    private static int removeDead(List<Enemy> enemies, Player player) {
+
+        int totalGold = 0;
+
         Iterator<Enemy> iterator = enemies.iterator();
+
         while (iterator.hasNext()) {
-            if (!iterator.next().isAlive()) {
+            Enemy enemy = iterator.next();
+
+            if (!enemy.isAlive()) {
+
+                int reward = enemy.getGoldReward();
+                player.addGold(reward);
+
+                totalGold += reward;
+
                 iterator.remove();
             }
         }
+
+        return totalGold;
     }
 
     // ================= ITEM PANEL =================
@@ -576,5 +600,36 @@ public class EnemyRoomScene {
             System.out.println("ไม่พบรูปศัตรู: " + path);
             return null;
         }
+    }
+
+    private static void showGoldEffect(StackPane root, int goldEarned) {
+
+        Label goldLabel = new Label("+" + goldEarned + " Gold");
+        goldLabel.setStyle(
+                "-fx-text-fill: gold;" +
+                        "-fx-font-size: 28px;" +
+                        "-fx-font-weight: bold;"
+        );
+
+        StackPane.setAlignment(goldLabel, Pos.CENTER);
+        root.getChildren().add(goldLabel);
+
+        TranslateTransition rise =
+                new TranslateTransition(Duration.seconds(1.2), goldLabel);
+        rise.setByY(-80);
+
+        FadeTransition fade =
+                new FadeTransition(Duration.seconds(1.2), goldLabel);
+        fade.setFromValue(1);
+        fade.setToValue(0);
+
+        ParallelTransition animation =
+                new ParallelTransition(rise, fade);
+
+        animation.setOnFinished(e ->
+                root.getChildren().remove(goldLabel)
+        );
+
+        animation.play();
     }
 }
