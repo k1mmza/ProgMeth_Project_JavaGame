@@ -466,6 +466,13 @@ public class EnemyRoomScene {
             Label energyLabel,
             HBox enemyPanel
     ) {
+        // Ensure selection is valid after enemies are removed
+        if (selectedEnemy[0] != null && !enemies.contains(selectedEnemy[0])) {
+            selectedEnemy[0] = null;
+        }
+        if (selectedEnemy[0] == null && enemies.size() == 1) {
+            selectedEnemy[0] = enemies.get(0);
+        }
 
         playerHpBar.setProgress(
                 (double) player.getHp() / player.getMaxHp()
