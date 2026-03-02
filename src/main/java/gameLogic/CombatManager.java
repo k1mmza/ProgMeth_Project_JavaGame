@@ -20,8 +20,10 @@ public class CombatManager {
 
         System.out.println("=== BATTLE START ===");
         player.resetEnergyToZero();
+        int turnCounter = 1;
 
         while (player.isAlive() && !enemies.isEmpty()) {
+            System.out.println("\n=== TURN " + turnCounter + " ===");
 
             // =========================
             // ===== PLAYER TURN =======
@@ -69,6 +71,8 @@ public class CombatManager {
                     enemy.endTurn();
                 }
             }
+
+            turnCounter++;
         }
 
         // =========================

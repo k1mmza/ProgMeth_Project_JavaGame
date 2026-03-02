@@ -125,7 +125,7 @@ public class MainMap extends Application {
             case SHOP -> "/music/shop.mp3";
             case REST -> "/music/rest.mp3";
             case BOSS -> "/music/final_boss.mp3";
-            case TREASURE -> "/music/treasure.mp3";
+            case TREASURE -> "/music/rest.mp3";
             case EVENT -> "/music/rest.mp3";
             default -> "/music/map.mp3";
         };
