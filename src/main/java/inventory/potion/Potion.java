@@ -17,9 +17,11 @@ public abstract class Potion implements Tradable, Usable {
     @Override
     public boolean buy(Player character) {
         if (character.getGold() >= buyCost) {
-            character.setGold(character.getGold() - buyCost);
-            character.getInventory().addPotion(this);
-            return true;
+            boolean added = character.getInventory().addPotion(this);
+            if (added) {
+                character.setGold(character.getGold() - buyCost);
+                return true;
+            }
         }
         return false;
     }
