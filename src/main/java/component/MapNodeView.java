@@ -146,19 +146,11 @@ public class MapNodeView extends StackPane {
         -fx-font-style: italic;
     """);
 
-        Button restartBtn = new Button("RESTART");
-        restartBtn.setStyle(darkButtonStyle());
-        restartBtn.setOnAction(e -> {
-            MapLogic.reset();
-            MainMap.switchScene(MainMap.getMapScene());
-            MainMap.playMapMusic();
-        });
-
         Button exitBtn = new Button("EXIT");
         exitBtn.setStyle(darkButtonStyle());
         exitBtn.setOnAction(e -> System.exit(0));
 
-        VBox root = new VBox(30, winLabel, subText, restartBtn, exitBtn);
+        VBox root = new VBox(30, winLabel, subText, exitBtn);
         root.setAlignment(Pos.CENTER);
 
         root.setStyle("""
