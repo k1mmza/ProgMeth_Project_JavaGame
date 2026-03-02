@@ -160,14 +160,15 @@ public class EnemyRoomScene {
 
         // ===== ATTACK =====
         attackBtn.setOnAction(e -> {
-            if (selectedEnemy[0] == null) return;
+            final Enemy target = selectedEnemy[0];
+            if (target == null) return;
 
             itemPopup.setVisible(false);
             skillPopup.setVisible(false);
             actionPanel.setDisable(true);
 
             playAttackAnimation(playerPanel, true, () -> {
-                player.normalAttack(selectedEnemy[0]);
+                player.normalAttack(target);
                 endPlayerTurn(player, enemies, room, onComplete,
                         selectedEnemy,
                         playerHpBar, playerHpText, energyLabel,
@@ -211,12 +212,13 @@ public class EnemyRoomScene {
 
         // ===== SKILLS =====
         s1.setOnAction(e -> {
-            if (selectedEnemy[0] == null) return;
+            final Enemy target = selectedEnemy[0];
+            if (target == null) return;
             if (player.getEnergy() < player.getSkill1Cost()) return;
             skillPopup.setVisible(false);
             actionPanel.setDisable(true);
             playAttackAnimation(playerPanel, true, () -> {
-                if (player.skill1(selectedEnemy[0])) {
+                if (player.skill1(target)) {
                     endPlayerTurn(player, enemies, room, onComplete,
                             selectedEnemy,
                             playerHpBar, playerHpText, energyLabel,
@@ -230,12 +232,13 @@ public class EnemyRoomScene {
         });
 
         s2.setOnAction(e -> {
-            if (selectedEnemy[0] == null) return;
+            final Enemy target = selectedEnemy[0];
+            if (target == null) return;
             if (player.getEnergy() < player.getSkill2Cost()) return;
             skillPopup.setVisible(false);
             actionPanel.setDisable(true);
             playAttackAnimation(playerPanel, true, () -> {
-                if (player.skill2(selectedEnemy[0])) {
+                if (player.skill2(target)) {
                     endPlayerTurn(player, enemies, room, onComplete,
                             selectedEnemy,
                             playerHpBar, playerHpText, energyLabel,
@@ -249,12 +252,13 @@ public class EnemyRoomScene {
         });
 
         s3.setOnAction(e -> {
-            if (selectedEnemy[0] == null) return;
+            final Enemy target = selectedEnemy[0];
+            if (target == null) return;
             if (player.getEnergy() < player.getSkill3Cost()) return;
             skillPopup.setVisible(false);
             actionPanel.setDisable(true);
             playAttackAnimation(playerPanel, true, () -> {
-                if (player.skill3(selectedEnemy[0])) {
+                if (player.skill3(target)) {
                     endPlayerTurn(player, enemies, room, onComplete,
                             selectedEnemy,
                             playerHpBar, playerHpText, energyLabel,
