@@ -1,6 +1,6 @@
 package Entity;
 
-public abstract class Entity {
+public abstract class  Entity {
 
     protected String name;
 

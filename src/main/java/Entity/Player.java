@@ -31,7 +31,7 @@ public abstract class Player extends Entity {
     public int getEnergy() { return energy; }
 
     public void focus() {
-        setEnergy(getEnergy() + 1);
+        gainEnergy(1);
     }
 
     public void setEnergy(int energy) {

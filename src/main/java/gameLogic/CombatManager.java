@@ -145,8 +145,13 @@ public class CombatManager {
                     break;
 
                 case 3:
+                    int energyBeforeFocus = player.getEnergy();
                     player.focus();
-                    actionPerformed = true;
+                    if (player.getEnergy() == energyBeforeFocus) {
+                        System.out.println("Energy is already full.");
+                    } else {
+                        actionPerformed = true;
+                    }
                     break;
 
                 case 4:

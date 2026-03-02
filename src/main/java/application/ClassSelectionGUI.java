@@ -125,7 +125,7 @@ public class ClassSelectionGUI extends JFrame {
 
         // 🔥 ส่ง player ไปเก็บที่ MainMap
         player.getInventory().addPotion(new AtkPotion());
-//        player.setAttack(1000);
+        player.setAttack(1000);
         MainMap.setPlayer(player);
 
         dispose();
