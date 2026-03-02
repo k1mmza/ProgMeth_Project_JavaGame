@@ -34,8 +34,10 @@ public class CombatManager {
 
         //System.out.println("=== BATTLE START ===");
         player.resetEnergyToZero();
+        int turnCounter = 1;
 
         while (player.isAlive() && !enemies.isEmpty()) {
+            System.out.println("\n=== TURN " + turnCounter + " ===");
 
             // ===== PLAYER TURN =====
 
@@ -77,6 +79,8 @@ public class CombatManager {
                     enemy.endTurn();
                 }
             }
+
+            turnCounter++;
         }
 
         // ===== BATTLE END =====
@@ -161,8 +165,13 @@ public class CombatManager {
                     break;
 
                 case 3:
+                    int energyBeforeFocus = player.getEnergy();
                     player.focus();
-                    actionPerformed = true;
+                    if (player.getEnergy() == energyBeforeFocus) {
+                        System.out.println("Energy is already full.");
+                    } else {
+                        actionPerformed = true;
+                    }
                     break;
 
                 case 4:

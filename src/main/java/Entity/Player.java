@@ -70,7 +70,7 @@ public abstract class Player extends Entity {
      * เพิ่มพลังงาน 1 หน่วย
      */
     public void focus() {
-        setEnergy(getEnergy() + 1);
+        gainEnergy(1);
     }
 
     /**

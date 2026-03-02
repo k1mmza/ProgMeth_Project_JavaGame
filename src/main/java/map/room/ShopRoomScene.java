@@ -76,14 +76,17 @@ public class ShopRoomScene {
 
             buyBtn.setOnAction(e -> {
 
-                if (player.getGold() >= potion.getBuyCost()) {
-
-                    player.setGold(player.getGold() - potion.getBuyCost());
-                    player.getInventory().addPotion(potion);
-
-                    goldLabel.setText("Gold: " + player.getGold());
-                    buyBtn.setDisable(true);
-
+                if (player.getInventory().isFull()) {
+                    buyBtn.setText("Inventory full");
+                } else if (player.getGold() >= potion.getBuyCost()) {
+                    boolean added = player.getInventory().addPotion(potion);
+                    if (added) {
+                        player.setGold(player.getGold() - potion.getBuyCost());
+                        goldLabel.setText("Gold: " + player.getGold());
+                        buyBtn.setDisable(true);
+                    } else {
+                        buyBtn.setText("Inventory full");
+                    }
                 } else {
                     buyBtn.setText("Not enough gold");
                 }
