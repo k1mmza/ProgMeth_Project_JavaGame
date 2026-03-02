@@ -212,53 +212,59 @@ public class EnemyRoomScene {
         // ===== SKILLS =====
         s1.setOnAction(e -> {
             if (selectedEnemy[0] == null) return;
-            if (player.skill1(selectedEnemy[0])) {
-                skillPopup.setVisible(false);
-                playAttackAnimation(playerPanel, true, () -> {
-                    player.skill1(selectedEnemy[0]);
-                    actionPanel.setDisable(true);
+            if (player.getEnergy() < player.getSkill1Cost()) return;
+            skillPopup.setVisible(false);
+            actionPanel.setDisable(true);
+            playAttackAnimation(playerPanel, true, () -> {
+                if (player.skill1(selectedEnemy[0])) {
                     endPlayerTurn(player, enemies, room, onComplete,
                             selectedEnemy,
                             playerHpBar, playerHpText, energyLabel,
                             enemyPanel,
                             actionPanel,
                             root);
-                });
-            }
+                } else {
+                    actionPanel.setDisable(false);
+                }
+            });
         });
 
         s2.setOnAction(e -> {
             if (selectedEnemy[0] == null) return;
-            if (player.skill2(selectedEnemy[0])) {
-                skillPopup.setVisible(false);
-                playAttackAnimation(playerPanel, true, () -> {
-                    player.skill2(selectedEnemy[0]);
-                    actionPanel.setDisable(true);
+            if (player.getEnergy() < player.getSkill2Cost()) return;
+            skillPopup.setVisible(false);
+            actionPanel.setDisable(true);
+            playAttackAnimation(playerPanel, true, () -> {
+                if (player.skill2(selectedEnemy[0])) {
                     endPlayerTurn(player, enemies, room, onComplete,
                             selectedEnemy,
                             playerHpBar, playerHpText, energyLabel,
                             enemyPanel,
                             actionPanel,
                             root);
-                });
-            }
+                } else {
+                    actionPanel.setDisable(false);
+                }
+            });
         });
 
         s3.setOnAction(e -> {
             if (selectedEnemy[0] == null) return;
-            if (player.skill3(selectedEnemy[0])) {
-                skillPopup.setVisible(false);
-                actionPanel.setDisable(true);
-                playAttackAnimation(playerPanel, true, () -> {
-                    player.skill3(selectedEnemy[0]);
+            if (player.getEnergy() < player.getSkill3Cost()) return;
+            skillPopup.setVisible(false);
+            actionPanel.setDisable(true);
+            playAttackAnimation(playerPanel, true, () -> {
+                if (player.skill3(selectedEnemy[0])) {
                     endPlayerTurn(player, enemies, room, onComplete,
                             selectedEnemy,
                             playerHpBar, playerHpText, energyLabel,
                             enemyPanel,
                             actionPanel,
                             root);
-                });
-            }
+                } else {
+                    actionPanel.setDisable(false);
+                }
+            });
         });
 
         return new Scene(root, 1024, 768);
