@@ -14,8 +14,29 @@ import map.Room;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * คลาส RestRoomScene ใช้สร้าง Scene สำหรับห้องพัก (Campfire)
+ * <p>
+ * เมื่อผู้เล่นเข้าห้อง:
+ * - จะได้รับการฟื้นฟู HP อัตโนมัติผ่าน room.restHeal(player)
+ * - แสดงจำนวน HP ที่ฟื้นฟู
+ * - สามารถใช้ Potion จาก inventory ได้
+ * </p>
+ *
+ * <p>
+ * ห้องนี้จะถูกตั้งค่าเป็น cleared เมื่อผู้เล่นกด Leave
+ * </p>
+ */
 public class RestRoomScene {
 
+    /**
+     * สร้าง Scene ของห้องพัก
+     *
+     * @param room ห้องปัจจุบัน (ใช้สำหรับ heal และตั้งค่า cleared)
+     * @param player ผู้เล่นปัจจุบัน
+     * @param onLeave Runnable ที่ถูกเรียกเมื่อผู้เล่นออกจากห้อง
+     * @return Scene สำหรับแสดงผลห้องพัก
+     */
     public static Scene create(Room room, Player player, Runnable onLeave) {
 
         // ======================
@@ -78,9 +99,17 @@ public class RestRoomScene {
         return new Scene(root, 1024, 768);
     }
 
-    // ============================
-    // สร้างปุ่ม potion ใหม่ทุกครั้ง
-    // ============================
+    /**
+     * รีเฟรชปุ่ม Potion ทั้งหมดในกล่อง potionBox
+     * <p>
+     * - ถ้าไม่มี Potion จะแสดงข้อความแจ้งเตือน
+     * - ถ้าใช้ Potion สำเร็จ จะลบออกจาก inventory
+     *   และรีเฟรชปุ่มใหม่ทันที
+     * </p>
+     *
+     * @param player ผู้เล่นที่ถือ Potion
+     * @param potionBox VBox ที่ใช้แสดงปุ่ม Potion
+     */
     private static void refreshPotionButtons(Player player, VBox potionBox) {
 
         potionBox.getChildren().clear();

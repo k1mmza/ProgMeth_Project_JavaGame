@@ -17,17 +17,40 @@ import map.logic.MapNode;
 import map.room.RoomFactory;
 import util.Constants;
 
+/**
+ * คลาสแสดงผลโหนด (Node) บนแผนที่เกม
+ * <p>
+ * ทำหน้าที่เป็นตัวแทนภาพของ {@link MapNode} บนหน้าจอ
+ * โดยแสดงไอคอนตามประเภทห้อง ({@link RoomType})
+ * และจัดการการโต้ตอบของผู้เล่น เช่น การ hover และการคลิกเพื่อเข้าสู่ห้อง
+ * </p>
+ */
 public class MapNodeView extends StackPane {
+
+    /**
+     * โหนดข้อมูลที่เชื่อมกับ View นี้
+     */
     private final MapNode node;
+
+    /**
+     * ตัวแสดงรูปภาพของโหนด
+     */
     private final ImageView imageView;
 
+    /**
+     * สร้าง MapNodeView สำหรับโหนดที่กำหนด
+     *
+     * @param node    โหนดข้อมูลของแผนที่
+     * @param mapPane ออบเจกต์ MapPane ที่ใช้สำหรับรีเฟรชสถานะหลังจบห้อง
+     */
     public MapNodeView(MapNode node, MapPane mapPane) {
         this.node = node;
 
-        double radius = (node.getType() == RoomType.BOSS) ? Constants.BOSS_RADIUS : Constants.NODE_RADIUS;
+        double radius = (node.getType() == RoomType.BOSS)
+                ? Constants.BOSS_RADIUS
+                : Constants.NODE_RADIUS;
         double size = radius * 2;
 
-        // บังคับขนาด StackPane ให้เป๊ะเท่ากับวงกลม (ป้องกันเส้นเบี้ยว)
         this.setMinSize(size, size);
         this.setMaxSize(size, size);
 
@@ -62,6 +85,14 @@ public class MapNodeView extends StackPane {
         });
     }
 
+    /**
+     * อัปเดตลักษณะการแสดงผลของโหนดตามสถานะปัจจุบัน
+     * <ul>
+     *     <li>โหนดปัจจุบัน: แสดงเอฟเฟกต์เรืองแสง</li>
+     *     <li>โหนดที่เลือกได้: แสดงปกติ</li>
+     *     <li>โหนดที่เลือกไม่ได้: ทำให้จางลง</li>
+     * </ul>
+     */
     public void updateVisuals() {
         if (MapLogic.getCurrentNode() == node) {
             DropShadow glow = new DropShadow(20, Color.ORANGE);
@@ -76,6 +107,12 @@ public class MapNodeView extends StackPane {
         }
     }
 
+    /**
+     * คืนค่า Image ตามประเภทของห้อง
+     *
+     * @param type ประเภทห้อง
+     * @return ไฟล์รูปภาพของโหนด หรือ null หากไม่พบ
+     */
     private Image getImageByType(RoomType type) {
         if (type == null) return null;
 
@@ -93,19 +130,27 @@ public class MapNodeView extends StackPane {
         try {
             return new Image(getClass().getResourceAsStream(path), 60, 60, true, true);
         } catch (Exception e) {
-            System.out.println("ไม่พบไฟล์รูปภาพ: " + path + " โปรดตรวจสอบชื่อและโฟลเดอร์ให้ถูกต้อง");
+            System.out.println("ไม่พบไฟล์รูปภาพ: " + path);
             return null;
         }
     }
 
+    /**
+     * เปิดห้องตามโหนดที่ถูกเลือก
+     * <p>
+     * จะสร้าง Scene ของห้องผ่าน {@link RoomFactory}
+     * และสลับ Scene ไปยังห้องนั้น พร้อมจัดการเพลงและสถานะของแผนที่
+     * </p>
+     *
+     * @param mapPane แผงแผนที่ที่ใช้สำหรับรีเฟรชสถานะโหนด
+     */
     private void openRoom(MapPane mapPane) {
 
-        // 🔥 ต้องมีบรรทัดนี้
         MapLogic.setCurrentNode(node);
 
         Scene roomScene = RoomFactory.createRoom(
                 node.getRoom(),
-                MainMap.getPlayer(),   // 🔥 ส่ง player เข้าไป
+                MainMap.getPlayer(),
                 () -> {
 
                     MapLogic.completeCurrentNode();
@@ -121,10 +166,16 @@ public class MapNodeView extends StackPane {
                     MainMap.playMapMusic();
                 }
         );
+
         MainMap.playRoomMusic(node.getType());
         MainMap.switchScene(roomScene);
     }
 
+    /**
+     * สร้าง Scene จบเกมเมื่อผู้เล่นเอาชนะ BOSS ได้
+     *
+     * @return Scene สำหรับหน้าจอจบเกม
+     */
     private Scene createEndGameScene() {
 
         Label winLabel = new Label("BOSS DEFEATED");
@@ -160,6 +211,11 @@ public class MapNodeView extends StackPane {
         return new Scene(root, 900, 600);
     }
 
+    /**
+     * คืนค่า CSS style สำหรับปุ่มธีมมืด
+     *
+     * @return สตริง CSS สำหรับปุ่ม
+     */
     private String darkButtonStyle() {
         return """
         -fx-background-color: #111111;

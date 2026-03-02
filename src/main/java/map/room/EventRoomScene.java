@@ -12,8 +12,31 @@ import javafx.scene.text.TextAlignment;
 import map.event.EventManager;
 import map.event.GameEvent;
 
+/**
+ * คลาส EventRoomScene ใช้สร้าง Scene สำหรับห้องประเภท Event
+ * <p>
+ * เมื่อผู้เล่นเข้าห้อง:
+ * - ระบบจะสุ่ม GameEvent จาก EventManager
+ * - แสดงชื่อ, คำอธิบาย และรูปภาพของเหตุการณ์
+ * - แสดงตัวเลือก (Options) ให้ผู้เล่นเลือก
+ * </p>
+ *
+ * <p>
+ * เมื่อผู้เล่นเลือกตัวเลือก:
+ * - จะเรียก event.applyChoice(player, index)
+ * - ล้างปุ่มตัวเลือกทั้งหมด
+ * - แสดงปุ่ม Continue เพื่อออกจากห้อง
+ * </p>
+ */
 public class EventRoomScene {
 
+    /**
+     * สร้าง Scene สำหรับห้อง Event
+     *
+     * @param player ผู้เล่นปัจจุบัน (ใช้สำหรับรับผลจาก event)
+     * @param onComplete Runnable ที่ถูกเรียกเมื่อผู้เล่นกด Continue
+     * @return Scene สำหรับแสดงเหตุการณ์แบบ interactive
+     */
     public static Scene create(Player player, Runnable onComplete) {
 
         EventManager manager = new EventManager();

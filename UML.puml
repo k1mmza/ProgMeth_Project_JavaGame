@@ -1,0 +1,277 @@
+@startuml
+class Entity.enemy.basic.Rat {
+- Random random
++ <<Create>> Rat()
++ void performAction(Entity)
+}
+
+
+class Entity.enemy.basic.Slime {
++ <<Create>> Slime()
++ void performAction(Entity)
+}
+
+class Entity.enemy.boss.IronGladiator {
+- boolean phaseTwo
+- Random random
++ <<Create>> IronGladiator()
++ void performAction(Entity)
+- void enterPhaseTwo()
+- void phaseOneBehavior(Entity)
+- void phaseTwoBehavior(Entity)
+- void heavySlam(Entity)
+- void fortifiedGuard()
+}
+
+
+abstract class Entity.Player {
+# int energy
+- int maxEnergy
+# int gold
+# Inventory inventory
++ <<Create>> Player(String,int,int,int)
++ int getGold()
++ void addGold(int)
++ void setGold(int)
++ int getEnergy()
++ void focus()
++ void setEnergy(int)
++ void resetEnergyToZero()
++ void gainEnergy(int)
++ boolean useEnergy(int)
++ void resetCombatState()
++ Inventory getInventory()
++ {abstract}boolean skill1(Entity)
++ {abstract}boolean skill2(Entity)
++ {abstract}boolean skill3(Entity)
++ {abstract}String getSkill1Name()
++ {abstract}String getSkill2Name()
++ {abstract}String getSkill3Name()
++ {abstract}int getSkill1Cost()
++ {abstract}int getSkill2Cost()
++ {abstract}int getSkill3Cost()
+}
+
+
+class Entity.enemy.basic.Goblin {
+- boolean isCharging
+- Random random
++ <<Create>> Goblin()
++ void performAction(Entity)
+- void goblinNormalAttack(Entity)
+- void defend()
+- void charge()
+}
+
+
+class Entity.enemy.boss.SlimeTyrant {
+- boolean overloaded
++ <<Create>> SlimeTyrant()
++ void performAction(Entity)
+}
+
+
+interface inventory.potion.Usable {
+~ boolean use(Player)
+}
+
+abstract class Entity.enemy.Enemy {
+# int goldReward
++ <<Create>> Enemy(String,int,int,int,int)
++ int getGoldReward()
++ void setGoldReward(int)
++ {abstract}void performAction(Entity)
+}
+
+
+class inventory.Inventory {
+- int maxPotion
+- List<Potion> potions
++ <<Create>> Inventory(int)
++ List<Potion> getPotions()
++ boolean addPotion(Potion)
++ boolean removePotion(Potion)
++ boolean isFull()
++ int getSize()
+}
+
+
+class Entity.enemy.boss.RatKing {
+- Random random
+- boolean frenzy
++ <<Create>> RatKing()
++ void performAction(Entity)
+}
+
+
+class Entity.enemy.boss.GoblinChief {
+- boolean enraged
+- Random random
++ <<Create>> GoblinChief()
++ void performAction(Entity)
+- void commandStrike(Entity)
+}
+
+
+interface inventory.potion.Tradable {
+~ boolean buy(Player)
+~ boolean sell(Player)
+}
+
+class Entity.classes.Rogue {
++ <<Create>> Rogue(String)
++ boolean skill1(Entity)
++ boolean skill2(Entity)
++ boolean skill3(Entity)
++ String getSkill1Name()
++ String getSkill2Name()
++ String getSkill3Name()
++ int getSkill1Cost()
++ int getSkill2Cost()
++ int getSkill3Cost()
+}
+
+abstract class Entity.Entity {
+# String name
+# int maxHp
+# int hp
+# int attack
+# int defense
+# int shield
+# int vulnerableTurns
+# int poisonTurns
+# int evadeStacks
++ <<Create>> Entity(String,int,int,int)
++ boolean isAlive()
++ String getName()
++ void setName(String)
++ int getHp()
++ void setHp(int)
++ int getMaxHp()
++ void setMaxHp(int)
++ int getAttack()
++ void setAttack(int)
++ int getDefense()
++ void setDefense(int)
++ int getShield()
++ void heal(int)
++ void normalAttack(Entity)
++ void takeDamage(int)
++ void startTurn()
++ void endTurn()
++ void applyVulnerable(int)
++ boolean isVulnerable()
++ void addPoison(int)
++ void addEvade(int)
++ void block()
++ void addShield(int)
++ void resetShield()
+}
+
+
+class inventory.potion.DefPotion {
+- int increaseDef
++ <<Create>> DefPotion()
++ boolean use(Player)
++ int getIncreaseDef()
++ int getBuyCost()
++ int getSellCost()
++ void setIncreaseDef(int)
+}
+
+
+class inventory.potion.HealingPotion {
+- int increaseHp
++ <<Create>> HealingPotion()
++ boolean use(Player)
++ int getIncreaseHp()
++ int getBuyCost()
++ int getSellCost()
++ void setIncreaseHp(int)
+}
+
+
+class inventory.potion.AtkPotion {
+- int increaseAtk
++ <<Create>> AtkPotion()
++ boolean use(Player)
++ int getIncreaseAtk()
++ int getBuyCost()
++ int getSellCost()
++ void setIncreaseAtk(int)
+}
+
+
+class Entity.classes.Mage {
++ <<Create>> Mage(String)
++ boolean skill1(Entity)
++ boolean skill2(Entity)
++ boolean skill3(Entity)
++ String getSkill1Name()
++ String getSkill2Name()
++ String getSkill3Name()
++ int getSkill1Cost()
++ int getSkill2Cost()
++ int getSkill3Cost()
+}
+
+class Entity.classes.Knight {
++ <<Create>> Knight(String)
++ boolean skill1(Entity)
++ int getSkill1Cost()
++ boolean skill2(Entity)
++ int getSkill2Cost()
++ boolean skill3(Entity)
++ int getSkill3Cost()
++ String getSkill1Name()
++ String getSkill2Name()
++ String getSkill3Name()
+}
+
+abstract class inventory.potion.Potion {
+# String name
+# int buyCost
+# int sellCost
+# String description
++ <<Create>> Potion(String,int,int)
++ boolean buy(Player)
++ boolean sell(Player)
++ {abstract}boolean use(Player)
++ String getName()
++ void setName(String)
++ int getSellCost()
++ void setSellCost(int)
++ int getBuyCost()
++ void setBuyCost(int)
++ String getDescription()
+}
+
+
+class inventory.potion.EnergyPotion {
++ <<Create>> EnergyPotion()
++ boolean use(Player)
++ int getBuyCost()
++ int getSellCost()
+}
+
+
+
+Entity.enemy.Enemy <|-- Entity.enemy.basic.Rat
+Entity.enemy.Enemy <|-- Entity.enemy.basic.Slime
+Entity.enemy.Enemy <|-- Entity.enemy.boss.IronGladiator
+Entity.Entity <|-- Entity.Player
+Entity.enemy.Enemy <|-- Entity.enemy.basic.Goblin
+Entity.enemy.basic.Slime <|-- Entity.enemy.boss.SlimeTyrant
+Entity.Entity <|-- Entity.enemy.Enemy
+Entity.enemy.basic.Rat <|-- Entity.enemy.boss.RatKing
+Entity.enemy.basic.Goblin <|-- Entity.enemy.boss.GoblinChief
+Entity.Player <|-- Entity.classes.Rogue
+inventory.potion.Potion <|-- inventory.potion.DefPotion
+inventory.potion.Potion <|-- inventory.potion.HealingPotion
+inventory.potion.Potion <|-- inventory.potion.AtkPotion
+Entity.Player <|-- Entity.classes.Mage
+Entity.Player <|-- Entity.classes.Knight
+inventory.potion.Tradable <|.. inventory.potion.Potion
+inventory.potion.Usable <|.. inventory.potion.Potion
+inventory.potion.Potion <|-- inventory.potion.EnergyPotion
+@enduml

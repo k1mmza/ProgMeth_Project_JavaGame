@@ -7,10 +7,33 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * คลาส MapGenerator ทำหน้าที่สร้างแผนที่ของเกมแบบสุ่ม (Procedural Generation)
+ * <p>
+ * ระบบจะสร้าง grid ของ MapNode ตามจำนวนชั้น (FLOORS) และความกว้าง (WIDTH)
+ * จากนั้นสุ่มสร้างเส้นทาง, เชื่อมต่อโหนด, กำหนดประเภทห้อง (RoomType)
+ * และสร้าง Boss Room ชั้นบนสุด
+ * </p>
+ *
+ * <p>
+ * ขั้นตอนหลัก:
+ * 1. สร้าง grid พร้อมตำแหน่งแบบสุ่มเล็กน้อย (jitter)
+ * 2. เลือกจุดเริ่มต้นหลายเส้นทาง
+ * 3. สร้างการเชื่อมต่อแต่ละชั้น
+ * 4. เพิ่ม Boss Node ด้านบนสุด
+ * 5. กำหนดประเภทห้องตามความคืบหน้าของเกม
+ * 6. ตรวจสอบว่ามีห้องพิเศษขั้นต่ำ (Shop / Elite / Event)
+ * </p>
+ */
 public class MapGenerator {
 
     private static final Random random = new Random();
 
+    /**
+     * สร้างและคืนค่าแผนที่ของเกม
+     *
+     * @return โครงสร้างแผนที่ในรูปแบบ List ของแต่ละชั้น
+     */
     public static List<List<MapNode>> generateMap() {
 
         MapLogic.reset();
@@ -18,7 +41,6 @@ public class MapGenerator {
         List<List<MapNode>> map = new ArrayList<>();
         MapNode[][] grid = new MapNode[Constants.FLOORS][Constants.WIDTH];
 
-        // 1️⃣ Create grid with jittered positions
         for (int floor = 0; floor < Constants.FLOORS; floor++) {
 
             List<MapNode> row = new ArrayList<>();
@@ -39,10 +61,8 @@ public class MapGenerator {
             map.add(row);
         }
 
-        // 2️⃣ Pick starting columns
         List<Integer> startCols = getStartingPoints();
 
-        // 3️⃣ Create connections
         for (int startCol : startCols) {
 
             int currentCol = startCol;
@@ -52,15 +72,13 @@ public class MapGenerator {
             }
         }
 
-        // 4️⃣ Create Boss Node
         double bossX = (Constants.WIDTH / 2.0) * Constants.SPACING_X;
         double bossY = 0;
 
         MapNode bossRoom = new MapNode(Constants.FLOORS, Constants.WIDTH / 2, bossX, bossY);
         bossRoom.setType(RoomType.BOSS);
-        bossRoom.createRoomFromType(); // 🔥 integrate your Room
+        bossRoom.createRoomFromType();
 
-        // Connect top floor nodes to boss if used
         for (int col = 0; col < Constants.WIDTH; col++) {
 
             MapNode topNode = grid[Constants.FLOORS - 1][col];
@@ -85,21 +103,23 @@ public class MapGenerator {
 
         assignRoomTypes(map);
 
-// 🔥 รวม node ทั้งหมดเข้า list เดียว
         List<MapNode> flatList = new ArrayList<>();
 
         for (List<MapNode> row : map) {
             flatList.addAll(row);
         }
 
-// 🔥 ส่งให้ MapLogic ใช้สำหรับล็อกเส้นทาง
         MapLogic.setAllNodes(flatList);
 
         return map;
     }
 
-    // --------------------------------------------------
-
+    /**
+     * สุ่มเลือกคอลัมน์เริ่มต้นของเส้นทาง
+     * ต้องมีอย่างน้อย 2 จุดที่ไม่ซ้ำกัน
+     *
+     * @return รายการ index คอลัมน์เริ่มต้น
+     */
     private static List<Integer> getStartingPoints() {
 
         List<Integer> starts = new ArrayList<>();
@@ -125,8 +145,14 @@ public class MapGenerator {
         return starts;
     }
 
-    // --------------------------------------------------
-
+    /**
+     * สร้างการเชื่อมต่อจากโหนดปัจจุบันไปยังชั้นถัดไป
+     *
+     * @param grid  grid ของแผนที่ทั้งหมด
+     * @param floor ชั้นปัจจุบัน
+     * @param col   คอลัมน์ปัจจุบัน
+     * @return คอลัมน์ปลายทางที่เชื่อมต่อสำเร็จ
+     */
     private static int setupConnection(MapNode[][] grid, int floor, int col) {
 
         MapNode current = grid[floor][col];
@@ -148,8 +174,14 @@ public class MapGenerator {
         }
     }
 
-    // --------------------------------------------------
-
+    /**
+     * สร้างการเชื่อมต่อจากโหนดปัจจุบันไปยังชั้นถัดไป
+     *
+     * @param grid  grid ของแผนที่ทั้งหมด
+     * @param floor ชั้นปัจจุบัน
+     * @param col   คอลัมน์ปัจจุบัน
+     * @return คอลัมน์ปลายทางที่เชื่อมต่อสำเร็จ
+     */
     private static boolean crossesExistingPath(MapNode[][] grid, int floor, int col, int targetCol) {
 
         if (targetCol > col) {
@@ -174,8 +206,11 @@ public class MapGenerator {
         return false;
     }
 
-    // --------------------------------------------------
-
+    /**
+     * กำหนดประเภทห้องให้แต่ละโหนดตามตำแหน่งชั้น
+     *
+     * @param map แผนที่ทั้งหมด
+     */
     private static void assignRoomTypes(List<List<MapNode>> map) {
 
         for (int floor = 0; floor < Constants.FLOORS; floor++) {
@@ -204,8 +239,12 @@ public class MapGenerator {
         ensureMinimumRooms(map);
     }
 
-    // --------------------------------------------------
-
+    /**
+     * สุ่มประเภทห้องตามความคืบหน้าของเกม (Early / Mid / Late)
+     *
+     * @param floor ชั้นปัจจุบัน
+     * @return RoomType ที่ถูกสุ่มตามน้ำหนัก
+     */
     private static RoomType weightedRoomType(int floor) {
 
         double progress = (double) floor / Constants.FLOORS;
@@ -241,6 +280,12 @@ public class MapGenerator {
         return RoomType.ELITE; // elites mostly late
     }
 
+    /**
+     * ตรวจสอบให้แน่ใจว่าแผนที่มีห้องพิเศษขั้นต่ำ
+     * (อย่างน้อย 1 Shop, 1 Elite และ 1 Event)
+     *
+     * @param map แผนที่ทั้งหมด
+     */
     private static void ensureMinimumRooms(List<List<MapNode>> map) {
 
         boolean hasShop = false;
@@ -280,6 +325,12 @@ public class MapGenerator {
         }
     }
 
+    /**
+     * เปลี่ยนประเภทของโหนดแบบสุ่มเป็นประเภทที่กำหนด
+     *
+     * @param nodes   รายชื่อโหนดที่สามารถเปลี่ยนได้
+     * @param newType ประเภทห้องใหม่
+     */
     private static void replaceRandom(List<MapNode> nodes, RoomType newType) {
 
         MapNode node = nodes.get(random.nextInt(nodes.size()));

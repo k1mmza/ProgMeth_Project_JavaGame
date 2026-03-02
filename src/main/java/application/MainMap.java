@@ -16,22 +16,60 @@ import map.logic.MapNode;
 
 import java.util.List;
 
+/**
+ * คลาสหลักสำหรับแสดงแผนที่ของเกมด้วย JavaFX
+ * <p>
+ * ทำหน้าที่:
+ * <ul>
+ *     <li>สร้างและแสดงหน้าจอแผนที่ (Map Scene)</li>
+ *     <li>สร้างข้อมูลแผนที่ด้วย {@link MapGenerator}</li>
+ *     <li>จัดการการเปลี่ยน Scene ภายในเกม</li>
+ *     <li>จัดการเพลงพื้นหลังของแผนที่และห้องประเภทต่าง ๆ</li>
+ *     <li>เก็บข้อมูล {@link Player} ปัจจุบันของเกม</li>
+ * </ul>
+ */
 public class MainMap extends Application {
+
+    /**
+     * Scene หลักของหน้าแผนที่
+     */
     private static Scene mapScene;
+
+    /**
+     * Stage หลักของแอปพลิเคชัน
+     */
     private static Stage primaryStage;
+
+    /**
+     * ผู้เล่นปัจจุบันที่ใช้งานอยู่ในเกม
+     */
     private static Player player;
+
+    /**
+     * ตัวจัดการเพลงพื้นหลัง
+     */
     private static MediaPlayer mapMusic;
 
+    /**
+     * เมธอดเริ่มต้นของ JavaFX Application
+     * <p>
+     * สร้างหน้าจอแผนที่, โหลดข้อมูลแผนที่แบบ background thread
+     * และแสดงผลบน JavaFX Application Thread
+     * </p>
+     *
+     * @param stage เวทีหลักของ JavaFX
+     */
     @Override
     public void start(Stage stage) {
 
-        primaryStage = stage; // เก็บ stage ไว้ใช้เปลี่ยน scene
+        primaryStage = stage;
 
         MapPane pane = new MapPane();
         Group mapGroup = new Group(pane);
         StackPane root = new StackPane(mapGroup);
         root.setStyle("-fx-background-color: #2b2b2b;");
 
+        // สร้างแผนที่ใน thread แยก เพื่อไม่ให้ UI ค้าง
         new Thread(() -> {
             List<List<MapNode>> map = MapGenerator.generateMap();
 
@@ -48,7 +86,7 @@ public class MainMap extends Application {
 
         }).start();
 
-        mapScene = new Scene(root, 1024, 768); // ✅ เก็บ scene
+        mapScene = new Scene(root, 1024, 768);
 
         stage.setTitle("SLAY THE GPA");
         stage.setScene(mapScene);
@@ -56,26 +94,57 @@ public class MainMap extends Application {
         stage.show();
     }
 
+    /**
+     * เปลี่ยน Scene ของ Stage หลัก
+     *
+     * @param scene Scene ใหม่ที่ต้องการแสดง
+     */
     public static void switchScene(Scene scene) {
         primaryStage.setScene(scene);
     }
 
+    /**
+     * คืนค่า Scene ของหน้าแผนที่
+     *
+     * @return Scene หลักของแผนที่
+     */
     public static Scene getMapScene() {
         return mapScene;
     }
 
+    /**
+     * เมธอด main สำหรับรัน JavaFX Application โดยตรง
+     *
+     * @param args อาร์กิวเมนต์จาก command line
+     */
     public static void main(String[] args) {
         launch(args);
     }
 
+    /**
+     * กำหนดผู้เล่นปัจจุบันของเกม
+     *
+     * @param p ออบเจกต์ผู้เล่น
+     */
     public static void setPlayer(Player p) {
         player = p;
     }
 
+    /**
+     * คืนค่าผู้เล่นปัจจุบัน
+     *
+     * @return ผู้เล่นที่กำลังใช้งาน
+     */
     public static Player getPlayer() {
         return player;
     }
 
+    /**
+     * เล่นเพลงพื้นหลังของหน้าแผนที่
+     * <p>
+     * หากมีเพลงเดิมกำลังเล่นอยู่ จะหยุดก่อนเริ่มเพลงใหม่
+     * </p>
+     */
     public static void playMapMusic() {
         try {
             if (mapMusic != null) {
@@ -96,6 +165,11 @@ public class MainMap extends Application {
         }
     }
 
+    /**
+     * เล่นเพลงตามประเภทของห้อง
+     *
+     * @param type ประเภทของห้อง ({@link RoomType})
+     */
     public static void playRoomMusic(RoomType type) {
         String resourcePath = getRoomMusicPath(type);
         try {
@@ -117,8 +191,15 @@ public class MainMap extends Application {
         }
     }
 
+    /**
+     * คืนค่า path ของไฟล์เพลงตามประเภทห้อง
+     *
+     * @param type ประเภทของห้อง
+     * @return path ของไฟล์เสียงที่อยู่ใน resources
+     */
     private static String getRoomMusicPath(RoomType type) {
         if (type == null) return "/music/map.mp3";
+
         return switch (type) {
             case ENEMY -> "/music/enemy.mp3";
             case ELITE -> "/music/enemy.mp3";
@@ -131,6 +212,9 @@ public class MainMap extends Application {
         };
     }
 
+    /**
+     * หยุดเพลงที่กำลังเล่นอยู่
+     */
     public static void stopMapMusic() {
         if (mapMusic != null) {
             mapMusic.stop();

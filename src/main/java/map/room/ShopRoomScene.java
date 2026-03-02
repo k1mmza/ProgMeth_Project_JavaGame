@@ -14,8 +14,32 @@ import map.shop.Shop;
 
 import java.util.List;
 
+/**
+ * คลาส ShopRoomScene ใช้สร้างหน้าจอร้านค้า (Shop Room) สำหรับระบบ GUI
+ * <p>
+ * หน้าจอจะแสดง:
+ * - รูปภาพพ่อค้า (Merchant)
+ * - จำนวน Gold ของผู้เล่น
+ * - รายการ Potion ที่สามารถซื้อได้
+ * - ปุ่ม Leave เพื่อออกจากร้าน
+ * </p>
+ *
+ * <p>
+ * เมื่อผู้เล่นกดปุ่ม Buy:
+ * - หากมี Gold เพียงพอ จะหัก Gold และเพิ่ม Potion เข้า Inventory
+ * - หาก Gold ไม่พอ จะแสดงข้อความแจ้งเตือน
+ * </p>
+ */
 public class ShopRoomScene {
 
+    /**
+     * สร้าง Scene สำหรับห้องร้านค้า
+     *
+     * @param shop ร้านค้าที่มีรายการสินค้า
+     * @param player ผู้เล่นที่กำลังซื้อของ
+     * @param onLeave Runnable ที่จะถูกเรียกเมื่อกดปุ่ม Leave
+     * @return Scene สำหรับแสดงหน้าร้านค้า
+     */
     public static Scene create(Shop shop, Player player, Runnable onLeave) {
 
         // ===== โหลดรูป Merchant =====
