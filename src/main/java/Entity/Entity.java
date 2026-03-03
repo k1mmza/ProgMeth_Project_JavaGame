@@ -105,11 +105,10 @@ public abstract class Entity {
     }
 
     public void startTurn() {
-        int poison = poisonTurns/2 + 1;
         if (poisonTurns > 0) {
             int poisonDamage = poisonTurns / 2 + 1;
             System.out.println(getName() + " takes " + poisonDamage + " poison damage!");
-            hp -= poisonDamage;
+            setHp((getHp() - poisonDamage));
             poisonTurns--;
         }
 
