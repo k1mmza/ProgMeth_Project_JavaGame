@@ -343,6 +343,7 @@ public class EnemyRoomScene {
             }
 
             // วนกลับมาเริ่มเทิร์นผู้เล่น
+            player.endTurn();
             player.startTurn();
             updateUI(player, enemies, selectedEnemy, playerHpBar, playerHpText, energyLabel, enemyPanel);
 
@@ -354,6 +355,12 @@ public class EnemyRoomScene {
         Enemy currentEnemy = enemies.get(index);
 
         if (currentEnemy.isAlive() && player.isAlive()) {
+            currentEnemy.startTurn();
+            if (!currentEnemy.isAlive()) {
+                updateUI(player, enemies, selectedEnemy, playerHpBar, playerHpText, energyLabel, enemyPanel);
+                processEnemyTurn(index + 1, player, enemies, room, onComplete, selectedEnemy, playerHpBar, playerHpText, energyLabel, enemyPanel, actionPanel, root);
+                return;
+            }
 
             // สร้างดีเลย์
             PauseTransition waitBeforeAttack = new PauseTransition(Duration.seconds(0.5));
@@ -367,6 +374,7 @@ public class EnemyRoomScene {
                     playAttackAnimation(enemyCardNode, false, () -> {
                         // พอพุ่งเสร็จค่อยลดเลือดเรา
                         currentEnemy.performAction(player);
+                        currentEnemy.endTurn();
                         // ===== Screen Shake Trigger =====
                         String enemyName = currentEnemy.getClass().getSimpleName().toLowerCase();
                         if (enemyName.equals("irongladiator")) {
