@@ -37,7 +37,7 @@ public class CombatManager {
         int turnCounter = 1;
 
         while (player.isAlive() && !enemies.isEmpty()) {
-            System.out.println("\n=== TURN " + turnCounter + " ===");
+            //System.out.println("\n=== TURN " + turnCounter + " ===");
 
             // ===== PLAYER TURN =====
 
