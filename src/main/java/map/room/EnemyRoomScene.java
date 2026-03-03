@@ -197,7 +197,11 @@ public class EnemyRoomScene {
 
         // ===== FOCUS =====
         focusBtn.setOnAction(e -> {
+            int energyBefore = player.getEnergy();
             player.focus();
+            if (player.getEnergy() == energyBefore) {
+                return;
+            }
 
             itemPopup.setVisible(false);
             skillPopup.setVisible(false);
