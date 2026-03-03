@@ -74,12 +74,15 @@ public class EnemyRoomScene {
 
         ProgressBar playerHpBar = new ProgressBar();
         playerHpBar.setPrefWidth(200);
+        Label playerHpText = new Label();
+        playerHpText.setTextFill(Color.WHITE);
+        playerHpText.setStyle("-fx-font-size: 14px;");
 
         Label energyLabel = new Label();
         energyLabel.setTextFill(Color.WHITE);
         energyLabel.setStyle("-fx-font-size: 14px;");
 
-        playerPanel.getChildren().addAll(playerImageView, playerName, playerHpBar, energyLabel);
+        playerPanel.getChildren().addAll(playerImageView, playerName, playerHpBar, playerHpText, energyLabel);
 
         // ===== ENEMY PANEL =====
         HBox enemyPanel = new HBox(30);
@@ -135,7 +138,7 @@ public class EnemyRoomScene {
 
         // ===== INITIAL UI =====
         updateUI(player, enemies, selectedEnemy,
-                playerHpBar, energyLabel, enemyPanel);
+                playerHpBar, playerHpText, energyLabel, enemyPanel);
 
         // ===== SKILL TEXT =====
         s1.setText(player.getSkill1Name() + " (Cost: " + player.getSkill1Cost() + ")");
@@ -151,15 +154,13 @@ public class EnemyRoomScene {
         itemBtn.setOnAction(e -> {
             skillPopup.setVisible(false);
             updateItemPopup(player, itemPopup, selectedEnemy, enemies, room, onComplete,
-                    playerHpBar, energyLabel, enemyPanel, actionPanel, root); // ส่ง actionPanel เข้าไปคุมแทน
+                    playerHpBar, playerHpText, energyLabel, enemyPanel, actionPanel, root); // ส่ง actionPanel เข้าไปคุมแทน
             itemPopup.setVisible(!itemPopup.isVisible());
         });
 
         // ===== ATTACK =====
         attackBtn.setOnAction(e -> {
             if (selectedEnemy[0] == null) return;
-
-            player.normalAttack(selectedEnemy[0]);
 
             itemPopup.setVisible(false);
             skillPopup.setVisible(false);
@@ -169,7 +170,7 @@ public class EnemyRoomScene {
                 player.normalAttack(selectedEnemy[0]);
                 endPlayerTurn(player, enemies, room, onComplete,
                         selectedEnemy,
-                        playerHpBar, energyLabel,
+                        playerHpBar, playerHpText, energyLabel,
                         enemyPanel,
                         actionPanel,
                         root);
@@ -187,7 +188,7 @@ public class EnemyRoomScene {
 
             endPlayerTurn(player, enemies, room, onComplete,
                     selectedEnemy,
-                    playerHpBar, energyLabel,
+                    playerHpBar, playerHpText, energyLabel,
                     enemyPanel,
                     actionPanel,
                     root);
@@ -202,7 +203,7 @@ public class EnemyRoomScene {
 
             endPlayerTurn(player, enemies, room, onComplete,
                     selectedEnemy,
-                    playerHpBar, energyLabel,
+                    playerHpBar, playerHpText, energyLabel,
                     enemyPanel,
                     actionPanel,
                     root);
@@ -218,7 +219,7 @@ public class EnemyRoomScene {
                     actionPanel.setDisable(true);
                     endPlayerTurn(player, enemies, room, onComplete,
                             selectedEnemy,
-                            playerHpBar, energyLabel,
+                            playerHpBar, playerHpText, energyLabel,
                             enemyPanel,
                             actionPanel,
                             root);
@@ -235,7 +236,7 @@ public class EnemyRoomScene {
                     actionPanel.setDisable(true);
                     endPlayerTurn(player, enemies, room, onComplete,
                             selectedEnemy,
-                            playerHpBar, energyLabel,
+                            playerHpBar, playerHpText, energyLabel,
                             enemyPanel,
                             actionPanel,
                             root);
@@ -252,7 +253,7 @@ public class EnemyRoomScene {
                     player.skill3(selectedEnemy[0]);
                     endPlayerTurn(player, enemies, room, onComplete,
                             selectedEnemy,
-                            playerHpBar, energyLabel,
+                            playerHpBar, playerHpText, energyLabel,
                             enemyPanel,
                             actionPanel,
                             root);
@@ -283,7 +284,7 @@ public class EnemyRoomScene {
 
     private static void endPlayerTurn(
             Player player, List<Enemy> enemies, Room room, Runnable onComplete,
-            Enemy[] selectedEnemy, ProgressBar playerHpBar, Label energyLabel,
+            Enemy[] selectedEnemy, ProgressBar playerHpBar, Label playerHpText, Label energyLabel,
             HBox enemyPanel, HBox actionPanel, StackPane root
     ) {
         int goldEarned = removeDead(enemies, player);
@@ -292,7 +293,7 @@ public class EnemyRoomScene {
             showGoldEffect(root, goldEarned);
         }
 
-        updateUI(player, enemies, selectedEnemy, playerHpBar, energyLabel, enemyPanel);
+        updateUI(player, enemies, selectedEnemy, playerHpBar, playerHpText, energyLabel, enemyPanel);
 
         if (enemies.isEmpty()) {
             room.setCleared(true);
@@ -311,12 +312,12 @@ public class EnemyRoomScene {
         actionPanel.setDisable(true);
 
         // เริ่มให้ศัตรูตีทีละตัว
-        processEnemyTurn(0, player, enemies, room, onComplete, selectedEnemy, playerHpBar, energyLabel, enemyPanel, actionPanel, root);
+        processEnemyTurn(0, player, enemies, room, onComplete, selectedEnemy, playerHpBar, playerHpText, energyLabel, enemyPanel, actionPanel, root);
     }
 
     private static void processEnemyTurn(
             int index, Player player, List<Enemy> enemies, Room room, Runnable onComplete,
-            Enemy[] selectedEnemy, ProgressBar playerHpBar, Label energyLabel,
+            Enemy[] selectedEnemy, ProgressBar playerHpBar, Label playerHpText, Label energyLabel,
             HBox enemyPanel, HBox actionPanel, StackPane root
     ) {
         // ถ้าศัตรูตีจบครบทุกตัวแล้ว
@@ -333,7 +334,7 @@ public class EnemyRoomScene {
 
             // วนกลับมาเริ่มเทิร์นผู้เล่น
             player.startTurn();
-            updateUI(player, enemies, selectedEnemy, playerHpBar, energyLabel, enemyPanel);
+            updateUI(player, enemies, selectedEnemy, playerHpBar, playerHpText, energyLabel, enemyPanel);
 
             // เปิดปุ่มคืนให้ผู้เล่นกดได้
             actionPanel.setDisable(false);
@@ -361,7 +362,7 @@ public class EnemyRoomScene {
                         if (enemyName.equals("irongladiator")) {
                             screenShake(root);
                         }
-                        updateUI(player, enemies, selectedEnemy, playerHpBar, energyLabel, enemyPanel);
+                        updateUI(player, enemies, selectedEnemy, playerHpBar, playerHpText, energyLabel, enemyPanel);
 
                         if (!player.isAlive()) {
                             showGameOver(root, actionPanel);
@@ -369,7 +370,7 @@ public class EnemyRoomScene {
                         }
 
                         // เรียกตัวต่อไปออกมาตี
-                        processEnemyTurn(index + 1, player, enemies, room, onComplete, selectedEnemy, playerHpBar, energyLabel, enemyPanel, actionPanel, root);
+                        processEnemyTurn(index + 1, player, enemies, room, onComplete, selectedEnemy, playerHpBar, playerHpText, energyLabel, enemyPanel, actionPanel, root);
                     });
                 }
             });
@@ -377,7 +378,7 @@ public class EnemyRoomScene {
 
         } else {
             // ข้ามไปตัวต่อไปทันที
-            processEnemyTurn(index + 1, player, enemies, room, onComplete, selectedEnemy, playerHpBar, energyLabel, enemyPanel, actionPanel, root);
+            processEnemyTurn(index + 1, player, enemies, room, onComplete, selectedEnemy, playerHpBar, playerHpText, energyLabel, enemyPanel, actionPanel, root);
         }
     }
 
@@ -431,6 +432,7 @@ public class EnemyRoomScene {
             Room room,
             Runnable onComplete,
             ProgressBar playerHpBar,
+            Label playerHpText,
             Label energyLabel,
             HBox enemyPanel,
             HBox actionPanel,
@@ -451,7 +453,7 @@ public class EnemyRoomScene {
                 if (used) {
                     player.getInventory().getPotions().remove(index);
                     itemPopup.setVisible(false);
-                    endPlayerTurn(player, enemies, room, onComplete, selectedEnemy, playerHpBar, energyLabel, enemyPanel, actionPanel, root);
+                    endPlayerTurn(player, enemies, room, onComplete, selectedEnemy, playerHpBar, playerHpText,energyLabel, enemyPanel, actionPanel, root);
                 }
             });
             itemPopup.getChildren().add(potionBtn);
@@ -487,6 +489,7 @@ public class EnemyRoomScene {
             List<Enemy> enemies,
             Enemy[] selectedEnemy,
             ProgressBar playerHpBar,
+            Label playerHpText,
             Label energyLabel,
             HBox enemyPanel
     ) {
@@ -501,6 +504,7 @@ public class EnemyRoomScene {
         playerHpBar.setProgress(
                 (double) player.getHp() / player.getMaxHp()
         );
+        playerHpText.setText("HP: " + player.getHp() + " / " + player.getMaxHp());
 
         energyLabel.setText(
                 "Energy: " + player.getEnergy() +
@@ -549,16 +553,18 @@ public class EnemyRoomScene {
 
             ProgressBar hpBar = new ProgressBar((double) e.getHp() / e.getMaxHp());
             hpBar.setPrefWidth(120);
+            Label hpText = new Label("HP: " + e.getHp() + " / " + e.getMaxHp());
+            hpText.setTextFill(Color.WHITE);
 
             Label shieldInfo = new Label(e.getShield() > 0 ? "Shield: " + e.getShield() : "");
             shieldInfo.setTextFill(Color.LIGHTBLUE);
 
-            enemyCard.getChildren().addAll(enemyImageView, name, hpBar, shieldInfo);
+            enemyCard.getChildren().addAll(enemyImageView, name, hpBar, hpText, shieldInfo);
 
             enemyCard.setOnMouseClicked(ev -> {
                 selectedEnemy[0] = e;
                 updateUI(player, enemies, selectedEnemy,
-                        playerHpBar, energyLabel, enemyPanel);
+                        playerHpBar, playerHpText, energyLabel, enemyPanel);
             });
 
             enemyPanel.getChildren().add(enemyCard);
