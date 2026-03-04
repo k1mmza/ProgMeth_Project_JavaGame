@@ -57,8 +57,27 @@ public abstract class Entity {
     }
     public int getShield() { return shield; }
     public void heal(int amount) {
-        setHp(getHp() + amount);
+        if (!isAlive()) return;
+
+        hp += amount;
+        if (hp > maxHp) {
+            hp = maxHp;
+        }
     }
+
+
+    public int getEvadeStacks() {
+        return evadeStacks;
+    }
+
+    public int getPoisonTurns() {
+        return poisonTurns;
+    }
+
+    public int getVulnerableTurns() {
+        return vulnerableTurns;
+    }
+
     // ===== Combat =====
 
     public void normalAttack(Entity target) {
