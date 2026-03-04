@@ -124,11 +124,14 @@ public class MapGenerator {
 
         List<Integer> starts = new ArrayList<>();
         int uniquePoints = 0;
+        int attempts = 0;
+        int maxAttempts = 1000;
 
-        while (uniquePoints < 2) {
+        while (uniquePoints < 2 && attempts < maxAttempts) {
 
             starts.clear();
             uniquePoints = 0;
+            attempts++;
 
             for (int i = 0; i < Constants.PATHS; i++) {
 
@@ -139,6 +142,14 @@ public class MapGenerator {
                 }
 
                 starts.add(startNode);
+            }
+        }
+
+        if (uniquePoints < 2) {
+            starts.clear();
+            int fallbackCount = Math.min(2, Constants.WIDTH);
+            for (int i = 0; i < fallbackCount; i++) {
+                starts.add(i);
             }
         }
 

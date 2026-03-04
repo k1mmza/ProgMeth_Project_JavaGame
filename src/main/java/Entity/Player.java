@@ -79,7 +79,11 @@ public abstract class Player extends Entity {
      * @param energy ค่าพลังงานใหม่
      */
     public void setEnergy(int energy) {
-        this.energy = energy;
+        if (energy < 0) {
+            this.energy = 0;
+            return;
+        }
+        this.energy = Math.min(energy, maxEnergy);
     }
 
     /**

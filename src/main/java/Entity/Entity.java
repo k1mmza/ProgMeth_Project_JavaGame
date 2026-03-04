@@ -45,7 +45,10 @@ public abstract class Entity {
     }
     public int getMaxHp() { return maxHp; }
     public void setMaxHp(int maxHp) {
-        this.maxHp = maxHp;
+        this.maxHp = Math.max(1, maxHp);
+        if (hp > this.maxHp) {
+            hp = this.maxHp;
+        }
     }
     public int getAttack() { return attack; }
     public void setAttack(int attack) {

@@ -1,6 +1,7 @@
 package application;
 
 import Entity.Player;
+import Entity.classes.Knight;
 import component.MapPane;
 import enums.RoomType;
 import javafx.application.Application;
@@ -63,6 +64,9 @@ public class MainMap extends Application {
     public void start(Stage stage) {
 
         primaryStage = stage;
+        if (player == null) {
+            player = new Knight("Player");
+        }
 
         MapPane pane = new MapPane();
         Group mapGroup = new Group(pane);
