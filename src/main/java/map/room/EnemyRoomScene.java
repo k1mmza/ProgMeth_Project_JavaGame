@@ -1,5 +1,6 @@
 package map.room;
 
+import Entity.Entity;
 import Entity.Player;
 import Entity.enemy.Enemy;
 import inventory.potion.Potion;
@@ -83,11 +84,18 @@ public class EnemyRoomScene {
         energyLabel.setTextFill(Color.WHITE);
         energyLabel.setStyle("-fx-font-size: 14px;");
 
+        FlowPane playerStatusBox = new FlowPane();
+        playerStatusBox.setHgap(6);
+        playerStatusBox.setVgap(6);
+        playerStatusBox.setAlignment(Pos.CENTER);
+
         Label turnLabel = new Label();
         turnLabel.setTextFill(Color.WHITE);
         turnLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
 
-        playerPanel.getChildren().addAll(playerImageView, playerName, playerHpBar, playerHpText, energyLabel);
+        playerPanel.getChildren().addAll(
+                playerImageView, playerName, playerHpBar, playerHpText, energyLabel, playerStatusBox
+        );
         StackPane.setAlignment(turnLabel, Pos.TOP_CENTER);
         StackPane.setMargin(turnLabel, new Insets(18, 0, 0, 0));
         root.getChildren().add(turnLabel);
@@ -146,7 +154,7 @@ public class EnemyRoomScene {
 
         // ===== INITIAL UI =====
         updateUI(player, enemies, selectedEnemy,
-                playerHpBar, playerHpText, energyLabel, enemyPanel, turnLabel, turnCounter[0]);
+                playerHpBar, playerHpText, energyLabel, playerStatusBox, enemyPanel, turnLabel, turnCounter[0]);
 
         // ===== SKILL TEXT =====
         s1.setText(player.getSkill1Name() + " (Cost: " + player.getSkill1Cost() + ")");
@@ -162,7 +170,7 @@ public class EnemyRoomScene {
         itemBtn.setOnAction(e -> {
             skillPopup.setVisible(false);
             updateItemPopup(player, itemPopup, selectedEnemy, enemies, room, onComplete,
-                    playerHpBar, playerHpText, energyLabel, enemyPanel, actionPanel, root, turnLabel, turnCounter); // ส่ง actionPanel เข้าไปคุมแทน
+                    playerHpBar, playerHpText, energyLabel, playerStatusBox, enemyPanel, actionPanel, root, turnLabel, turnCounter); // ส่ง actionPanel เข้าไปคุมแทน
             itemPopup.setVisible(!itemPopup.isVisible());
         });
 
@@ -179,7 +187,7 @@ public class EnemyRoomScene {
                 player.normalAttack(target);
                 endPlayerTurn(player, enemies, room, onComplete,
                         selectedEnemy,
-                        playerHpBar, playerHpText, energyLabel,
+                        playerHpBar, playerHpText, energyLabel, playerStatusBox,
                         enemyPanel,
                         actionPanel,
                         root,
@@ -199,7 +207,7 @@ public class EnemyRoomScene {
 
             endPlayerTurn(player, enemies, room, onComplete,
                     selectedEnemy,
-                    playerHpBar, playerHpText, energyLabel,
+                    playerHpBar, playerHpText, energyLabel, playerStatusBox,
                     enemyPanel,
                     actionPanel,
                     root,
@@ -220,7 +228,7 @@ public class EnemyRoomScene {
 
             endPlayerTurn(player, enemies, room, onComplete,
                     selectedEnemy,
-                    playerHpBar, playerHpText, energyLabel,
+                    playerHpBar, playerHpText, energyLabel, playerStatusBox,
                     enemyPanel,
                     actionPanel,
                     root,
@@ -239,7 +247,7 @@ public class EnemyRoomScene {
                 if (player.skill1(target)) {
                     endPlayerTurn(player, enemies, room, onComplete,
                             selectedEnemy,
-                            playerHpBar, playerHpText, energyLabel,
+                            playerHpBar, playerHpText, energyLabel, playerStatusBox,
                             enemyPanel,
                             actionPanel,
                             root,
@@ -261,7 +269,7 @@ public class EnemyRoomScene {
                 if (player.skill2(target)) {
                     endPlayerTurn(player, enemies, room, onComplete,
                             selectedEnemy,
-                            playerHpBar, playerHpText, energyLabel,
+                            playerHpBar, playerHpText, energyLabel, playerStatusBox,
                             enemyPanel,
                             actionPanel,
                             root,
@@ -283,7 +291,7 @@ public class EnemyRoomScene {
                 if (player.skill3(target)) {
                     endPlayerTurn(player, enemies, room, onComplete,
                             selectedEnemy,
-                            playerHpBar, playerHpText, energyLabel,
+                            playerHpBar, playerHpText, energyLabel, playerStatusBox,
                             enemyPanel,
                             actionPanel,
                             root,
@@ -318,7 +326,7 @@ public class EnemyRoomScene {
 
     private static void endPlayerTurn(
             Player player, List<Enemy> enemies, Room room, Runnable onComplete,
-            Enemy[] selectedEnemy, ProgressBar playerHpBar, Label playerHpText, Label energyLabel,
+            Enemy[] selectedEnemy, ProgressBar playerHpBar, Label playerHpText, Label energyLabel, FlowPane playerStatusBox,
             HBox enemyPanel, HBox actionPanel, StackPane root,
             Label turnLabel, int[] turnCounter
     ) {
@@ -328,18 +336,11 @@ public class EnemyRoomScene {
             showGoldEffect(root, goldEarned);
         }
 
-        updateUI(player, enemies, selectedEnemy, playerHpBar, playerHpText, energyLabel, enemyPanel, turnLabel, turnCounter[0]);
+        updateUI(player, enemies, selectedEnemy, playerHpBar, playerHpText, energyLabel, playerStatusBox, enemyPanel, turnLabel, turnCounter[0]);
 
         if (enemies.isEmpty()) {
             room.setCleared(true);
-
-            actionPanel.setDisable(false);
-
-            actionPanel.getChildren().clear();
-            Button victoryBtn = new Button("Victory! Leave");
-            victoryBtn.setStyle("-fx-font-size: 16px; -fx-padding: 10 20;");
-            victoryBtn.setOnAction(e -> onComplete.run());
-            actionPanel.getChildren().add(victoryBtn);
+            showVictoryButton(actionPanel, onComplete);
             return;
         }
 
@@ -347,12 +348,12 @@ public class EnemyRoomScene {
         actionPanel.setDisable(true);
 
         // เริ่มให้ศัตรูตีทีละตัว
-        processEnemyTurn(0, player, enemies, room, onComplete, selectedEnemy, playerHpBar, playerHpText, energyLabel, enemyPanel, actionPanel, root, turnLabel, turnCounter);
+        processEnemyTurn(0, player, enemies, room, onComplete, selectedEnemy, playerHpBar, playerHpText, energyLabel, playerStatusBox, enemyPanel, actionPanel, root, turnLabel, turnCounter);
     }
 
     private static void processEnemyTurn(
             int index, Player player, List<Enemy> enemies, Room room, Runnable onComplete,
-            Enemy[] selectedEnemy, ProgressBar playerHpBar, Label playerHpText, Label energyLabel,
+            Enemy[] selectedEnemy, ProgressBar playerHpBar, Label playerHpText, Label energyLabel, FlowPane playerStatusBox,
             HBox enemyPanel, HBox actionPanel, StackPane root,
             Label turnLabel, int[] turnCounter
     ) {
@@ -363,6 +364,11 @@ public class EnemyRoomScene {
             if (goldEarned > 0) {
                 showGoldEffect(root, goldEarned);
             }
+            if (enemies.isEmpty()) {
+                room.setCleared(true);
+                showVictoryButton(actionPanel, onComplete);
+                return;
+            }
             if (!player.isAlive()) {
                 showGameOver(root, actionPanel);
                 return;
@@ -372,7 +378,7 @@ public class EnemyRoomScene {
             player.endTurn();
             player.startTurn();
             turnCounter[0]++;
-            updateUI(player, enemies, selectedEnemy, playerHpBar, playerHpText, energyLabel, enemyPanel, turnLabel, turnCounter[0]);
+            updateUI(player, enemies, selectedEnemy, playerHpBar, playerHpText, energyLabel, playerStatusBox, enemyPanel, turnLabel, turnCounter[0]);
 
             // เปิดปุ่มคืนให้ผู้เล่นกดได้
             actionPanel.setDisable(false);
@@ -384,8 +390,8 @@ public class EnemyRoomScene {
         if (currentEnemy.isAlive() && player.isAlive()) {
             currentEnemy.startTurn();
             if (!currentEnemy.isAlive()) {
-                updateUI(player, enemies, selectedEnemy, playerHpBar, playerHpText, energyLabel, enemyPanel, turnLabel, turnCounter[0]);
-                processEnemyTurn(index + 1, player, enemies, room, onComplete, selectedEnemy, playerHpBar, playerHpText, energyLabel, enemyPanel, actionPanel, root, turnLabel, turnCounter);
+                updateUI(player, enemies, selectedEnemy, playerHpBar, playerHpText, energyLabel, playerStatusBox, enemyPanel, turnLabel, turnCounter[0]);
+                processEnemyTurn(index + 1, player, enemies, room, onComplete, selectedEnemy, playerHpBar, playerHpText, energyLabel, playerStatusBox, enemyPanel, actionPanel, root, turnLabel, turnCounter);
                 return;
             }
 
@@ -407,7 +413,7 @@ public class EnemyRoomScene {
                         if (enemyName.equals("irongladiator")) {
                             screenShake(root);
                         }
-                        updateUI(player, enemies, selectedEnemy, playerHpBar, playerHpText, energyLabel, enemyPanel, turnLabel, turnCounter[0]);
+                        updateUI(player, enemies, selectedEnemy, playerHpBar, playerHpText, energyLabel, playerStatusBox, enemyPanel, turnLabel, turnCounter[0]);
 
                         if (!player.isAlive()) {
                             showGameOver(root, actionPanel);
@@ -415,7 +421,7 @@ public class EnemyRoomScene {
                         }
 
                         // เรียกตัวต่อไปออกมาตี
-                        processEnemyTurn(index + 1, player, enemies, room, onComplete, selectedEnemy, playerHpBar, playerHpText, energyLabel, enemyPanel, actionPanel, root, turnLabel, turnCounter);
+                        processEnemyTurn(index + 1, player, enemies, room, onComplete, selectedEnemy, playerHpBar, playerHpText, energyLabel, playerStatusBox, enemyPanel, actionPanel, root, turnLabel, turnCounter);
                     });
                 }
             });
@@ -423,7 +429,7 @@ public class EnemyRoomScene {
 
         } else {
             // ข้ามไปตัวต่อไปทันที
-            processEnemyTurn(index + 1, player, enemies, room, onComplete, selectedEnemy, playerHpBar, playerHpText, energyLabel, enemyPanel, actionPanel, root, turnLabel, turnCounter);
+            processEnemyTurn(index + 1, player, enemies, room, onComplete, selectedEnemy, playerHpBar, playerHpText, energyLabel, playerStatusBox, enemyPanel, actionPanel, root, turnLabel, turnCounter);
         }
     }
 
@@ -442,6 +448,16 @@ public class EnemyRoomScene {
         loseBox.getChildren().addAll(loseLabel, exitBtn);
         root.getChildren().add(loseBox);
         actionPanel.setDisable(true);
+    }
+
+    private static void showVictoryButton(HBox actionPanel, Runnable onComplete) {
+        actionPanel.setDisable(false);
+        actionPanel.getChildren().clear();
+
+        Button victoryBtn = new Button("Victory! Leave");
+        victoryBtn.setStyle("-fx-font-size: 16px; -fx-padding: 10 20;");
+        victoryBtn.setOnAction(e -> onComplete.run());
+        actionPanel.getChildren().add(victoryBtn);
     }
 
     private static int removeDead(List<Enemy> enemies, Player player) {
@@ -479,6 +495,7 @@ public class EnemyRoomScene {
             ProgressBar playerHpBar,
             Label playerHpText,
             Label energyLabel,
+            FlowPane playerStatusBox,
             HBox enemyPanel,
             HBox actionPanel,
             StackPane root,
@@ -500,7 +517,7 @@ public class EnemyRoomScene {
                 if (used) {
                     player.getInventory().getPotions().remove(index);
                     itemPopup.setVisible(false);
-                    endPlayerTurn(player, enemies, room, onComplete, selectedEnemy, playerHpBar, playerHpText,energyLabel, enemyPanel, actionPanel, root, turnLabel, turnCounter);
+                    endPlayerTurn(player, enemies, room, onComplete, selectedEnemy, playerHpBar, playerHpText,energyLabel, playerStatusBox, enemyPanel, actionPanel, root, turnLabel, turnCounter);
                 }
             });
             itemPopup.getChildren().add(potionBtn);
@@ -538,6 +555,7 @@ public class EnemyRoomScene {
             ProgressBar playerHpBar,
             Label playerHpText,
             Label energyLabel,
+            FlowPane playerStatusBox,
             HBox enemyPanel,
             Label turnLabel,
             int turnCounter
@@ -559,6 +577,7 @@ public class EnemyRoomScene {
                 "Energy: " + player.getEnergy() +
                         " | Shield: " + player.getShield()
         );
+        updateStatusBadges(playerStatusBox, player);
         turnLabel.setText("Turn: " + turnCounter);
 
         enemyPanel.getChildren().clear();
@@ -609,12 +628,18 @@ public class EnemyRoomScene {
             Label shieldInfo = new Label(e.getShield() > 0 ? "Shield: " + e.getShield() : "");
             shieldInfo.setTextFill(Color.LIGHTBLUE);
 
-            enemyCard.getChildren().addAll(enemyImageView, name, hpBar, hpText, shieldInfo);
+            FlowPane enemyStatusBox = new FlowPane();
+            enemyStatusBox.setHgap(6);
+            enemyStatusBox.setVgap(6);
+            enemyStatusBox.setAlignment(Pos.CENTER);
+            updateStatusBadges(enemyStatusBox, e);
+
+            enemyCard.getChildren().addAll(enemyImageView, name, hpBar, hpText, shieldInfo, enemyStatusBox);
 
             enemyCard.setOnMouseClicked(ev -> {
                 selectedEnemy[0] = e;
                 updateUI(player, enemies, selectedEnemy,
-                        playerHpBar, playerHpText, energyLabel, enemyPanel, turnLabel, turnCounter);
+                        playerHpBar, playerHpText, energyLabel, playerStatusBox, enemyPanel, turnLabel, turnCounter);
             });
 
             enemyPanel.getChildren().add(enemyCard);
@@ -622,6 +647,50 @@ public class EnemyRoomScene {
     }
 
     // ================= IMAGE LOADERS =================
+
+    private static void updateStatusBadges(FlowPane container, Entity entity) {
+        container.getChildren().clear();
+
+        if (entity.getPoisonTurns() > 0) {
+            container.getChildren().add(
+                    createStatusIconBadge("/status/poison.png", "P" + entity.getPoisonTurns())
+            );
+        }
+        if (entity.getVulnerableTurns() > 0) {
+            int shownVulnerableTurns = Math.max(1, entity.getVulnerableTurns() - 1);
+            container.getChildren().add(
+                    createStatusIconBadge("/status/vulnerable.png", "V" + shownVulnerableTurns)
+            );
+        }
+        if (entity.getEvadeStacks() > 0) {
+            container.getChildren().add(
+                    createStatusIconBadge("/status/evade.png", "E" + entity.getEvadeStacks())
+            );
+        }
+    }
+
+    private static StackPane createStatusIconBadge(String path, String marker) {
+        javafx.scene.image.ImageView icon = new javafx.scene.image.ImageView(
+                new javafx.scene.image.Image(EnemyRoomScene.class.getResourceAsStream(path))
+        );
+        icon.setFitWidth(30);
+        icon.setFitHeight(30);
+        icon.setPreserveRatio(true);
+
+        Label markerLabel = new Label(marker);
+        markerLabel.setStyle(
+                "-fx-background-color: rgba(0,0,0,0.85);" +
+                        "-fx-text-fill: white;" +
+                        "-fx-font-size: 10px;" +
+                        "-fx-font-weight: bold;" +
+                        "-fx-padding: 1 4 1 4;" +
+                        "-fx-background-radius: 9;"
+        );
+
+        StackPane badge = new StackPane(icon, markerLabel);
+        StackPane.setAlignment(markerLabel, Pos.TOP_CENTER);
+        return badge;
+    }
 
     private static javafx.scene.image.Image getPlayerImage(Player player) {
         String path = "/player/knight.png";
@@ -689,3 +758,4 @@ public class EnemyRoomScene {
         animation.play();
     }
 }
+

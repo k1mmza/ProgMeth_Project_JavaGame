@@ -146,7 +146,9 @@ public abstract class Entity {
 
     public void applyVulnerable(int turns) {
         System.out.println(getName() + " is now vulnerable for " + turns + " turns!");
-        vulnerableTurns += turns;
+        if (turns <= 0) return;
+        // Add one grace tick so status survives the current round's endTurn.
+        vulnerableTurns += (turns + 1);
     }
 
     public boolean isVulnerable() {
