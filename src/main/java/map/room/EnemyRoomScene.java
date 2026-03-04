@@ -577,8 +577,9 @@ public class EnemyRoomScene {
         playerHpText.setText("HP: " + player.getHp() + " / " + player.getMaxHp());
 
         energyLabel.setText(
-                "Energy: " + player.getEnergy() +
-                        " | Shield: " + player.getShield()
+                "Attack: " + player.getAttack() +
+                " | Energy: " + player.getEnergy() +
+                " | Shield: " + player.getShield()
         );
         updateStatusBadges(playerStatusBox, player);
         turnLabel.setText("Turn: " + turnCounter);
