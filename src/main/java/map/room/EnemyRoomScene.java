@@ -340,7 +340,7 @@ public class EnemyRoomScene {
 
         if (enemies.isEmpty()) {
             room.setCleared(true);
-            showVictoryButton(actionPanel, onComplete);
+            showVictoryButton(actionPanel, player, onComplete);
             return;
         }
 
@@ -366,7 +366,7 @@ public class EnemyRoomScene {
             }
             if (enemies.isEmpty()) {
                 room.setCleared(true);
-                showVictoryButton(actionPanel, onComplete);
+                showVictoryButton(actionPanel, player, onComplete);
                 return;
             }
             if (!player.isAlive()) {
@@ -450,13 +450,16 @@ public class EnemyRoomScene {
         actionPanel.setDisable(true);
     }
 
-    private static void showVictoryButton(HBox actionPanel, Runnable onComplete) {
+    private static void showVictoryButton(HBox actionPanel, Player player, Runnable onComplete) {
         actionPanel.setDisable(false);
         actionPanel.getChildren().clear();
 
         Button victoryBtn = new Button("Victory! Leave");
         victoryBtn.setStyle("-fx-font-size: 16px; -fx-padding: 10 20;");
-        victoryBtn.setOnAction(e -> onComplete.run());
+        victoryBtn.setOnAction(e -> {
+            player.clearStatusEffects();
+            onComplete.run();
+        });
         actionPanel.getChildren().add(victoryBtn);
     }
 

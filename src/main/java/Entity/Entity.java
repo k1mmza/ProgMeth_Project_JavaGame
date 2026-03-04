@@ -165,6 +165,12 @@ public abstract class Entity {
         evadeStacks += stacks;
     }
 
+    public void clearStatusEffects() {
+        vulnerableTurns = 0;
+        poisonTurns = 0;
+        evadeStacks = 0;
+    }
+
 
     // ===== Shield =====
 
