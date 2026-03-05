@@ -23,7 +23,7 @@ public class Knight extends Player {
      * @param name ชื่อของผู้เล่น
      */
     public Knight(String name) {
-        super(name, 100, 8, 6);
+        super(name, 100, 50, 6);
         setEnergy(0);
     }
 
