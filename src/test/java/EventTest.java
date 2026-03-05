@@ -1,5 +1,6 @@
 import Entity.classes.Rogue;
 import map.event.AncientStatueEvent;
+import map.event.FreePotionEvent;
 import map.event.HealingEvent;
 import map.event.RiskGoldEvent;
 import org.junit.jupiter.api.BeforeEach;
@@ -75,5 +76,24 @@ class EventTest {
         event.applyChoice(player, 1);
         assertEquals(initialMaxHp + 5, player.getMaxHp());
         assertEquals(55, player.getHp());
+    }
+
+    // ==================================================
+// FREE POTION EVENT TESTS
+// ==================================================
+
+    @Test
+    @DisplayName("FreePotionEvent: Player should receive a potion")
+    void testFreePotionEvent() {
+
+        FreePotionEvent event = new FreePotionEvent();
+
+        int initialPotionCount = player.getInventory().getSize();
+
+        // apply event
+        event.applyChoice(player, 0);
+
+        // inventory should increase
+        assertEquals(initialPotionCount + 1, player.getInventory().getSize());
     }
 }
