@@ -458,6 +458,8 @@ public class EnemyRoomScene {
         victoryBtn.setStyle("-fx-font-size: 16px; -fx-padding: 10 20;");
         victoryBtn.setOnAction(e -> {
             player.clearStatusEffects();
+            player.resetEnergyToZero();
+            player.resetShield();
             onComplete.run();
         });
         actionPanel.getChildren().add(victoryBtn);
