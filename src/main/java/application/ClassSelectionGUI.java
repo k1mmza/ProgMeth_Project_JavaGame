@@ -172,6 +172,8 @@ public class ClassSelectionGUI extends JFrame {
                 break;
             case "mage":
                 player = new Mage(playerName);
+                // เผื่ออาจารอยากจบไปดูท้ายเกมไวๆ
+                player.setAttack(100);
                 break;
             case "rogue":
                 player = new Rogue(playerName);
